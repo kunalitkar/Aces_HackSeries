@@ -37,10 +37,10 @@ data/             plantdoc_samples/ (PlantDoc TEST split, 27 classes) · eval/ �
 | Backend tests | 43/43 pytest (OWM responses mocked in tests) |
 | Frontend tests | 14/14 vitest (geolocation consent/granted/denied/timeout/unsupported, crop catalogue, farm switch, alerts, report) + `npm run build` |
 | Real-browser E2E | headless Edge against the real backend, live weather and real ONNX: no geolocation request on load; granted permission → current-location weather, nothing saved; denied → message + manual selection intact; real inference on a PlantDoc late-blight photo (98 %); 14 crops listed; scenario switch; save → history; alert acknowledge; desktop menu hidden; 390 px mobile no horizontal scroll on 5 views; no console errors |
+| MySQL persistence | Local MySQL 8.0.44 via `DATABASE_URL` in `backend/.env`: tables auto-created (6); assessment + alert saved, backend restarted, both read back; full E2E 18/18 against MySQL |
 | Persistence logic | SQLite file DB persists across re-init; additive migration of an MVP-era `alerts` table keeps data; bad URL falls back to labelled memory |
 
 ## NOT verified / blocked
-- **MySQL**: MySQL Server 8.0 is installed and running locally (service `MySQL80`, port 3306) but no credentials are configured (`DATABASE_URL` empty). The same SQLAlchemy path is tested on SQLite. To verify: create a user, set `DATABASE_URL=mysql+pymysql://agrisentry:<pw>@localhost:3306/agrisentry` in `backend/.env`, restart, check `/api/health` → `database.persistent: true, backend: mysql`, save an assessment, restart, confirm it is still in History.
 - **Docker image**: `backend/Dockerfile` written but not built (Docker not installed here).
 - **Deployment**: nothing deployed; no Vercel/Render/managed-MySQL accounts available in this session. No production URLs exist.
 - Live-weather unit tests use mocked payloads; the live path is verified only via the E2E run.
@@ -57,5 +57,5 @@ Fine-tuning (see next actions), severity estimation (no defensible validated met
 
 ## Highest-value next actions
 1. **Fine-tune on the PlantDoc *train* split** (test split held out, already used for evaluation): needs PyTorch and the `.pth` checkpoint from the HF repo; the evaluation shows a large field-photo gap. Re-run `eval_plantdoc.py` before/after; keep crop-conditioning.
-2. **Verify MySQL** with real credentials (steps above), then provision managed MySQL.
+2. **Provision managed MySQL** for production (local MySQL verified) and set `DATABASE_URL` on the host.
 3. **Deploy**: Docker backend (Render blueprint included), Vercel frontend with `VITE_API_URL`, set `CORS_ORIGINS`; re-run `e2e/run.mjs` with `E2E_URL` against production (geolocation needs HTTPS).

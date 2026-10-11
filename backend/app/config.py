@@ -8,14 +8,14 @@ try:  # backend/.env (git-ignored) is the supported place for secrets
     load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 except ImportError:
     pass
-MODEL_DIR = Path(os.getenv("AGRISENTRY_MODEL_DIR", ROOT / "models"))
+MODEL_DIR = Path(os.getenv("AGRISENTRY_MODEL_DIR", "").strip() or ROOT / "models")  # blank in .env = default
 MODEL_PATH = MODEL_DIR / "efficientnet_v2_s_best.onnx"
 CLASSES_PATH = MODEL_DIR / "classes.json"
 
 OWM_API_KEY = os.getenv("OPENWEATHER_API_KEY", "").strip()
 # e.g. mysql+pymysql://user:pass@localhost:3306/agrisentry (any SQLAlchemy URL works)
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
-CORS_ORIGINS = [o for o in os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",") if o]
+CORS_ORIGINS = [o.strip() for o in (os.getenv("CORS_ORIGINS", "").strip() or "http://localhost:5173,http://127.0.0.1:5173").split(",") if o.strip()]
 MAX_UPLOAD_BYTES = 8 * 1024 * 1024
 
 FARMS = [

@@ -264,3 +264,17 @@ def test_failed_live_not_cached_and_demo_still_labelled(monkeypatch):
     assert not weather._cache
     d = client.get("/api/v1/weather", params={"farm_id": 1, "mode": "conducive"}).json()
     assert d["status"] == "demo" and d["label"].startswith("Simulated") and d["source"] != "OpenWeatherMap"
+
+
+def test_blank_env_values_fall_back_to_defaults(monkeypatch):
+    """A copied .env.example leaves AGRISENTRY_MODEL_DIR= blank; that must mean 'use the default'."""
+    import importlib
+    monkeypatch.setenv("AGRISENTRY_MODEL_DIR", "")
+    monkeypatch.setenv("CORS_ORIGINS", " ")
+    c = importlib.reload(config)
+    try:
+        assert c.MODEL_DIR == c.ROOT / "models" and c.CLASSES_PATH.exists()
+        assert c.CORS_ORIGINS == ["http://localhost:5173", "http://127.0.0.1:5173"]
+    finally:
+        monkeypatch.undo()
+        importlib.reload(config)

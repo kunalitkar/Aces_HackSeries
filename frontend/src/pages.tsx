@@ -4,6 +4,8 @@ import { api, fmtDateTime, fmtTime, prettyLabel, tzLabel, type Assessment, type 
 import type { Agri } from './useAgri'
 import { AdvisoryBanner, CAT_COLOR, Card, CurrentStats, DataBadge, Factors, Gauge, Notice, RiskTrend, WeatherChart } from './ui'
 import { downloadReport, printReport } from './report'
+import { LeafPicker, PhotoGuide, QualityPanel } from './PhotoTools'
+import { CropHealthRisk, DailyRiskList, WhatShouldIDo, WhyAtRisk } from './WeatherRisk'
 
 const pct = (n: number) => `${Math.round(n * 100)}%`
 
@@ -36,6 +38,7 @@ export function ImageSummary({ result, error, loading }: { result: ImageResult |
   if (loading) return <p className="text-sm text-muted">Analysing leaf image…</p>
   if (error) return <Notice tone="error">{error}</Notice>
   if (!result) return <p className="text-sm text-muted">No leaf image analysed yet.</p>
+  if (result.status === 'quality_failed') return <p className="text-sm text-muted">Not analysed yet — see the photo check below.</p>
   if (result.status !== 'ok') return <Notice tone="warn">Image classification unavailable: {result.error}</Notice>
   const alt = result.unrestricted_top3?.[0]
   return (
@@ -151,7 +154,8 @@ export function Monitoring({ a }: { a: Agri }) {
               <p className="mt-2 text-xs text-muted">Diseases not listed cannot be recognised. Weather-based forecasting: {a.catalog?.weather_model[info.crop] ? `${a.catalog.weather_model[info.crop]} (experimental)` : 'not available for this crop'}.</p>
             </div>
           )}
-          <div className="mt-4">
+          <div className="mt-4 space-y-3">
+            <PhotoGuide />
             <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" data-testid="file-input" onChange={(e) => { pick(e.target.files); e.target.value = '' }} />
             {!a.image.previewUrl ? (
               <button type="button" onClick={() => input.current?.click()}
@@ -162,7 +166,7 @@ export function Monitoring({ a }: { a: Agri }) {
               </button>
             ) : (
               <div>
-                <img src={a.image.previewUrl} alt="Leaf preview" className="max-h-80 w-full rounded-xl bg-sage-50 object-contain" />
+                <LeafPicker src={a.image.previewUrl} analysed={a.image.region} busy={a.image.loading} onAnalyse={a.analyseRegion} />
                 <div className="mt-3 flex gap-2">
                   <button className="btn btn-ghost" onClick={() => input.current?.click()}><Replace size={15} /> Replace</button>
                   <button className="btn btn-ghost" onClick={a.removeImage}><Trash2 size={15} /> Remove</button>
@@ -175,6 +179,7 @@ export function Monitoring({ a }: { a: Agri }) {
           <Card title="Model result">
             {!a.image.previewUrl && <p className="text-sm text-muted"><Upload className="mb-1 inline" size={16} /> Upload a photo to run inference.</p>}
             <ImageSummary result={r} error={a.image.error} loading={a.image.loading} />
+            <div className="mt-3"><QualityPanel result={r} onRetake={() => input.current?.click()} onAnyway={a.analyseAnyway} /></div>
             {r?.status === 'ok' && (
               <div className="mt-4">
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">{r.single_class_crop ? 'Raw score' : `Top candidates within ${r.selected_crop}`}</p>
@@ -299,6 +304,14 @@ export function WeatherOutlook({ a }: { a: Agri }) {
       {!f && a.loading && <Card><p className="text-sm text-muted">Loading weather…</p></Card>}
       {!f && !a.loading && !a.error && <Card><p className="text-sm text-muted">No weather data yet.</p></Card>}
       {f && w!.status === 'unavailable' && <WeatherUnavailable a={a} />}
+      {f && (f.risk.status !== 'unavailable' || w!.current) && (
+        <CropHealthRisk risk={f.risk} crop={f.crop} disease={a.catalog?.weather_model[f.crop]} updated={w!.fetched_at} offset={off} />
+      )}
+      {f && f.risk.status === 'ok' && (
+        <div className="grid gap-5 lg:grid-cols-2"><WhyAtRisk risk={f.risk} /><WhatShouldIDo advisory={f.advisory} /></div>
+      )}
+      {f && f.risk.status === 'ok' && <DailyRiskList risk={f.risk} />}
+      {f && f.risk.status === 'not_applicable' && <WhatShouldIDo advisory={f.advisory} />}
       {f && w!.current && (<>
         <Card title="Current conditions">
           <CurrentConditions p={w!.current} />

@@ -74,6 +74,8 @@ class ImagePrediction(Base):
     crop: Mapped[str | None] = mapped_column(String(40), nullable=True)
     image_ref: Mapped[str | None] = mapped_column(String(200), nullable=True)
     model_version: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    region: Mapped[str | None] = mapped_column(String(80), nullable=True)          # user-selected leaf area (fractions)
+    quality_status: Mapped[str | None] = mapped_column(String(10), nullable=True)  # ok | warn | fail (analysed anyway)
 
 
 class Assessment(Base):
@@ -234,7 +236,9 @@ def save_image(farm_id: int | None, res: dict, filename: str | None, image_ref: 
     with session() as s:
         s.add(ImagePrediction(farm_id=farm_id, label=res["label"], score=res["score"], latency_ms=res["latency_ms"],
                               filename=(filename or "")[:200], crop=res.get("selected_crop"), image_ref=image_ref,
-                              model_version=res.get("model_version")))
+                              model_version=res.get("model_version"),
+                              region=",".join(f"{res['region'][k]:.4f}" for k in "xywh") if res.get("region") else None,
+                              quality_status=(res.get("quality") or {}).get("status")))
         s.commit()
 
 

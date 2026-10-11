@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { api, type Alert, type Farm, type Forecast, type Health, type ImageResult, type Mode, type ModelCatalog, type Selection } from './api'
+import { api, type Alert, type Farm, type Forecast, type Health, type ImageResult, type Mode, type ModelCatalog, type Region, type Selection } from './api'
 
-export type View = 'overview' | 'monitoring' | 'weather' | 'advisories' | 'history' | 'alerts'
+export type View = 'overview' | 'monitoring' | 'weather' | 'advisories' | 'history' | 'alerts' | 'chat'
 export const MAX_IMAGE_BYTES = 8 * 1024 * 1024
 
 export interface ImageState {
@@ -10,9 +10,10 @@ export interface ImageState {
   result: ImageResult | null
   loading: boolean
   error: string | null
+  region: Region | null  // user-selected leaf area of the current analysis (null = whole photo)
 }
 export type GeoState = { status: 'idle' | 'locating' | 'error'; error: string | null }
-const emptyImage: ImageState = { file: null, previewUrl: null, result: null, loading: false, error: null }
+const emptyImage: ImageState = { file: null, previewUrl: null, result: null, loading: false, error: null, region: null }
 const round2 = (n: number) => Math.round(n * 100) / 100
 
 export const geoErrorMessage = (code: number | 'unsupported') => ({
@@ -86,11 +87,11 @@ export function useAgri() {
   useEffect(() => { load() }, [load])
   useEffect(() => { if (saveMsg) { const t = setTimeout(() => setSaveMsg(null), 3000); return () => clearTimeout(t) } }, [saveMsg])
 
-  const diagnose = useCallback(async (file: File, forCrop: string) => {
+  const diagnose = useCallback(async (file: File, forCrop: string, region: Region | null = null, force = false) => {
     const id = ++imgReq.current
-    setImage((s) => ({ ...s, result: null, error: null, loading: true }))
+    setImage((s) => ({ ...s, result: null, error: null, loading: true, region }))
     try {
-      const result = await api.diagnose(file, farm?.id ?? null, forCrop)
+      const result = await api.diagnose(file, farm?.id ?? null, forCrop, region, force)
       if (id === imgReq.current) setImage((s) => ({ ...s, result, loading: false }))
     } catch (e) {
       if (id === imgReq.current) setImage((s) => ({ ...s, loading: false, error: (e as Error).message }))
@@ -111,11 +112,21 @@ export function useAgri() {
     diagnose(file, activeCrop)
   }, [activeCrop, diagnose])
 
-  /** Changing crop re-runs the same photo against the new crop's classes. */
+  /** Changing crop re-runs the same photo (and selected leaf area) against the new crop's classes. */
   const setCrop = useCallback((c: string) => {
     setCropState(c)
-    if (image.file && !image.error) diagnose(image.file, c)
-  }, [image.file, image.error, diagnose])
+    if (image.file && !image.error) diagnose(image.file, c, image.region)
+  }, [image.file, image.error, image.region, diagnose])
+
+  /** Analyse only the leaf area the farmer selected (null = whole photo). The original photo is unchanged. */
+  const analyseRegion = useCallback((region: Region | null) => {
+    if (image.file) diagnose(image.file, activeCrop, region)
+  }, [image.file, activeCrop, diagnose])
+
+  /** Classify a photo that failed the quality check; the result is marked unreliable by the backend. */
+  const analyseAnyway = useCallback(() => {
+    if (image.file) diagnose(image.file, activeCrop, image.region, true)
+  }, [image.file, image.region, activeCrop, diagnose])
 
   /** Only ever called from an explicit user action after the consent explanation. */
   const requestLocation = useCallback(() => {
@@ -148,7 +159,7 @@ export function useAgri() {
   const current = forecast && JSON.stringify([selection, mode, forecast.crop]) === selKey ? forecast : null
   return {
     view, setView, farms, farm, selection, setSelection, refreshFarms, crop: activeCrop, setCrop, mode, setMode, health, catalog,
-    forecast: current, loading, error, image, setFile, removeImage: clearImage, reload: load, saveMsg,
+    forecast: current, loading, error, image, setFile, removeImage: clearImage, reload: load, saveMsg, analyseRegion, analyseAnyway,
     alerts, refreshAlerts, acknowledge, geo, requestLocation, dismissGeoError, saveLocationAsFarm,
     farmId: farm?.id ?? null,
   }

@@ -80,7 +80,7 @@ export function RiskTrend({ risk, height = 240, offset }: { risk: Risk; height?:
           <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={{ fontSize: 11, fill: '#66705f' }} />
           <ReferenceLine y={25} stroke="#b7791f" strokeDasharray="3 3" /><ReferenceLine y={50} stroke="#c2410c" strokeDasharray="3 3" /><ReferenceLine y={75} stroke="#9f1239" strokeDasharray="3 3" />
           <Tooltip formatter={(v) => [`${Number(v).toFixed(0)} / 100`, 'Favourability']} />
-          <Area type="monotone" dataKey="index" stroke="#1f4d3a" strokeWidth={2} fill="url(#rg)" />
+          <Area type="monotone" dataKey="index" stroke="#1f4d3a" strokeWidth={2} fill="url(#rg)" isAnimationActive={false} />
         </AreaChart>
       </ResponsiveContainer>
     </div>
@@ -98,9 +98,9 @@ export function WeatherChart({ series, height = 280, offset }: { series: Weather
           <YAxis yAxisId="l" tick={{ fontSize: 11, fill: '#66705f' }} />
           <YAxis yAxisId="r" orientation="right" tick={{ fontSize: 11, fill: '#66705f' }} />
           <Tooltip /><Legend wrapperStyle={{ fontSize: 12 }} />
-          <Bar yAxisId="r" dataKey="rain_mm" name="Rain (mm)" fill="#8fae8b" barSize={6} />
-          <Line yAxisId="l" type="monotone" dataKey="temp_c" name="Temp (°C)" stroke="#b7791f" strokeWidth={2} dot={false} />
-          <Line yAxisId="l" type="monotone" dataKey="rh" name="Humidity (%)" stroke="#1f4d3a" strokeWidth={2} dot={false} />
+          <Bar yAxisId="r" dataKey="rain_mm" name="Rain (mm)" fill="#8fae8b" barSize={6} isAnimationActive={false} />
+          <Line yAxisId="l" type="monotone" dataKey="temp_c" name="Temp (°C)" stroke="#b7791f" strokeWidth={2} dot={false} isAnimationActive={false} />
+          <Line yAxisId="l" type="monotone" dataKey="rh" name="Humidity (%)" stroke="#1f4d3a" strokeWidth={2} dot={false} isAnimationActive={false} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

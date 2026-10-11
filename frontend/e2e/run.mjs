@@ -7,8 +7,11 @@ import path from 'node:path'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const URL_ = process.env.E2E_URL ?? 'http://localhost:5173'
+const API = process.env.E2E_API ?? 'http://127.0.0.1:8000'
 const SHOTS = path.join(ROOT, 'data', 'e2e')
 const LEAF = path.join(ROOT, 'data', 'plantdoc_samples', 'late_blight', '18c.jpg')
+const MULTI = path.join(ROOT, 'data', 'plantdoc_samples', 'late_blight', 'late_blight_tomato_leaf_spore1x1200.jpg')
+const BLURRY = path.join(ROOT, 'data', 'e2e', 'blurry_leaf_test.jpg')  // generated: PlantDoc photo + Gaussian blur
 mkdirSync(SHOTS, { recursive: true })
 
 const results = []
@@ -88,7 +91,55 @@ await check('crop selector lists all 14 crops from the model', async () => {
   assert(opts.length === 14, `got ${opts.length}`)
   return opts.join(', ')
 })
+await check('photo guide is visible next to the uploader', async () => {
+  await page.getByText('How to take a good photo').waitFor()
+  assert(await page.getByRole('img', { name: /whole plant far away/ }).isVisible(), 'guide illustration missing')
+})
+await check('mark one leaf by dragging on the real photo; only that area is analysed', async () => {
+  await page.getByRole('button', { name: /Mark one leaf/ }).click()
+  const box = await page.getByAltText('Leaf preview').boundingBox()
+  await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2)
+  await page.mouse.down()
+  await page.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.8, { steps: 8 })
+  await page.mouse.up()
+  const resp = page.waitForResponse((r) => r.url().includes('/diagnose-image'))
+  await page.getByRole('button', { name: 'Check marked leaf' }).click()
+  const region = (await (await resp).json()).region  // backend echoes the area it actually analysed
+  assert(region && Math.abs(region.x - 0.2) < 0.03 && Math.abs(region.w - 0.6) < 0.03, `region ${JSON.stringify(region)}`)
+  await page.getByText(/Checked: the marked leaf only/).waitFor({ timeout: 30000 })
+  return `region ${JSON.stringify(region)} · ${await page.getByText(/Model score \d+%/).first().innerText()}`
+})
 await page.screenshot({ path: path.join(SHOTS, 'monitoring-desktop.png'), fullPage: true })
+await check('blurry photo is blocked with a clear message; "analyse anyway" works and is marked unreliable', async () => {
+  await page.getByTestId('file-input').setInputFiles(BLURRY)
+  await page.getByText('This photo could not be checked reliably').waitFor({ timeout: 30000 })
+  const msg = await page.getByText(/The photo is blurry/).innerText()
+  await page.getByRole('button', { name: /Analyse anyway/ }).click()
+  await page.getByText('Analysed anyway — result not reliable').waitFor({ timeout: 30000 })
+  await page.getByText('Uncertain').first().waitFor()
+  return msg
+})
+await check('multi-leaf field photo is accepted and analysed', async () => {
+  await page.getByTestId('file-input').setInputFiles(MULTI)
+  await page.getByText(/Model score \d+%/).first().waitFor({ timeout: 30000 })
+  assert(!(await page.getByText('This photo could not be checked reliably').isVisible()), 'multi-leaf photo rejected')
+})
+await page.getByTestId('file-input').setInputFiles(LEAF)
+await page.getByText('Tomato — Late blight').first().waitFor({ timeout: 30000 })
+
+await check('weather tab: live crop health risk, why-factors and day-by-day risk shown', async () => {
+  await page.getByRole('button', { name: 'Weather Outlook' }).first().click()
+  await page.getByRole('heading', { name: 'Crop health risk' }).waitFor({ timeout: 20000 })
+  const sec = page.locator('section', { has: page.getByRole('heading', { name: 'Crop health risk' }) })
+  const level = await sec.locator('span.rounded-full').first().innerText()
+  await page.getByText('Why is my crop at risk?').waitFor()
+  const days = await page.locator('text=Day-by-day risk').locator('xpath=ancestor::section[1]').locator('li').count()
+  assert(days >= 3, `only ${days} days`)
+  await page.getByText('What should I do?').waitFor()
+  await page.getByText('Current conditions').waitFor()  // existing weather view preserved
+  return `${level}, ${days} forecast days, basis: ${(await sec.innerText()).match(/Current weather and forecast|Forecast weather/)?.[0]}`
+})
+await page.screenshot({ path: path.join(SHOTS, 'weather-risk-desktop.png'), fullPage: true })
 
 await check('disease-conducive demo changes risk and advisory; save assessment goes to history', async () => {
   await page.getByRole('button', { name: 'Demo: disease-conducive' }).click()
@@ -100,6 +151,21 @@ await check('disease-conducive demo changes risk and advisory; save assessment g
   await page.getByRole('button', { name: 'Assessment History' }).first().click()
   await page.getByText(/Tomato – Late blight/).first().waitFor()
   return 'saved + listed'
+})
+await check('Ask AgriSentry: disclosure + context; not-configured state OR a real Groq answer', async () => {
+  await page.getByRole('button', { name: /^Ask AgriSentry/ }).first().click()
+  await page.getByRole('heading', { name: 'Ask AgriSentry', level: 1 }).waitFor()
+  await page.getByText(/AI-generated answers/).waitFor()
+  await page.getByTestId('chat-context').getByText(/Based on:/).waitFor()
+  const configured = (await (await fetch('' + API + '/api/health')).json()).chat.configured
+  if (!configured) {
+    await page.getByText('The chat helper is not set up on this server.').waitFor()
+    assert(await page.getByLabel('Your question').isDisabled(), 'input should be disabled')
+    return 'not configured (no GROQ_API_KEY): disabled with setup instructions'
+  }
+  await page.getByRole('button', { name: 'Why is my crop at risk?' }).click()
+  await page.getByText('AI answer').waitFor({ timeout: 40000 })
+  return 'real Groq answer: ' + (await page.getByText('AI answer').locator('xpath=..').innerText()).replace(/\s+/g, ' ').slice(0, 160)
 })
 await check('alerts page lists simulated alert and acknowledgement works', async () => {
   await page.getByRole('button', { name: /^Alerts/ }).first().click()
@@ -118,13 +184,13 @@ watch(gpage)
 await gpage.goto(URL_)
 await gpage.getByText('LIVE DATA').first().waitFor({ timeout: 20000 })
 await check('granted permission: weather for current location (rounded), not saved as farm', async () => {
-  const farmsBefore = await (await fetch('http://127.0.0.1:8000/api/v1/farms')).json()
+  const farmsBefore = await (await fetch('' + API + '/api/v1/farms')).json()
   await gpage.getByRole('button', { name: /Use my location/ }).click()
   await gpage.getByRole('button', { name: 'Continue' }).click()
   await gpage.getByText(/Showing weather for your current location/).waitFor({ timeout: 20000 })
   await gpage.getByText('LIVE DATA').first().waitFor({ timeout: 20000 })
   const banner = await gpage.getByText(/Showing weather for your current location/).innerText()
-  const farmsAfter = await (await fetch('http://127.0.0.1:8000/api/v1/farms')).json()
+  const farmsAfter = await (await fetch('' + API + '/api/v1/farms')).json()
   assert(farmsAfter.length === farmsBefore.length, 'a farm was saved without consent')
   return banner
 })
@@ -137,7 +203,7 @@ const mpage = await mctx.newPage()
 watch(mpage)
 await mpage.goto(URL_)
 await mpage.getByText('LIVE DATA').first().waitFor({ timeout: 20000 })
-for (const view of ['Overview', 'Weather Outlook', 'Crop Monitoring', 'Alerts', 'Assessment History']) {
+for (const view of ['Overview', 'Weather Outlook', 'Crop Monitoring', 'Alerts', 'Ask AgriSentry', 'Assessment History']) {
   await check(`mobile 390px: ${view} has no horizontal page scroll`, async () => {
     await mpage.getByRole('button', { name: 'Open menu' }).click()
     await mpage.getByRole('button', { name: new RegExp(`^${view}`) }).last().click()

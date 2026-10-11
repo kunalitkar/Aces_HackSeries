@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Bell, BellRing, CalendarClock, ClipboardList, CloudSun, LayoutDashboard, Leaf, Menu, ScanSearch, User, X } from 'lucide-react'
+import { Bell, BellRing, CalendarClock, ClipboardList, CloudSun, LayoutDashboard, Leaf, Menu, MessageCircle, ScanSearch, User, X } from 'lucide-react'
 import { useAgri, type View } from './useAgri'
 import type { Mode } from './api'
 import { Advisories, Alerts, History, Monitoring, Overview, WeatherOutlook } from './pages'
 import { FarmManager, GeoBanner, LocationSelector } from './LocationControls'
+import { AskAgriSentry } from './Chat'
 
 const NAV: { id: View; label: string; icon: typeof Leaf }[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -11,6 +12,7 @@ const NAV: { id: View; label: string; icon: typeof Leaf }[] = [
   { id: 'weather', label: 'Weather Outlook', icon: CloudSun },
   { id: 'advisories', label: 'Field Advisories', icon: ClipboardList },
   { id: 'alerts', label: 'Alerts', icon: BellRing },
+  { id: 'chat', label: 'Ask AgriSentry', icon: MessageCircle },
   { id: 'history', label: 'Assessment History', icon: CalendarClock },
 ]
 const MODES: { id: Mode; label: string }[] = [
@@ -100,6 +102,7 @@ export default function App() {
           {a.view === 'weather' && <WeatherOutlook a={a} />}
           {a.view === 'advisories' && <Advisories a={a} />}
           {a.view === 'alerts' && <Alerts a={a} />}
+          {a.view === 'chat' && <AskAgriSentry a={a} />}
           {a.view === 'history' && <History a={a} />}
           <p className="pt-6 text-center text-xs text-muted">AgriSentry is a decision-support prototype. Weather favourability and AI image output do not confirm infection — verify in the field and consult local agricultural guidance.</p>
         </main>

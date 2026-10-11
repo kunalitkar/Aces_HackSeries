@@ -29,7 +29,18 @@ export interface Weather {
   series?: WeatherPoint[]
   current?: WeatherPoint
 }
-export interface Factor { key: string; label: string; points: number; max_points: number; detail: string; available: boolean }
+export interface Factor {
+  key: string; label: string; points: number; max_points: number; detail: string; available: boolean
+  name?: string; value?: number | null; unit?: string; interpretation?: string; why?: string
+}
+export interface DailyRisk {
+  date: string; index: number; category: 'Low' | 'Moderate' | 'High' | 'Very High'; peak_time: string
+  main_factor: string | null; main_factor_reading: string; action: string; basis: string; partial: boolean; windows: number
+  weather: { temp_min: number | null; temp_max: number | null; rh_mean: number | null; rain_mm: number | null; description: string | null }
+}
+export interface QualityCheck { key: string; status: 'warn' | 'fail'; value: number; message: string }
+export interface Quality { status: 'ok' | 'warn' | 'fail'; checks: QualityCheck[]; note: string; metrics: Record<string, number> }
+export interface Region { x: number; y: number; w: number; h: number }
 export interface TrendPoint { time: string; index: number; category: string; temp_c: number | null; rh: number | null; rain_mm: number | null }
 export interface RiskRules {
   disease: string; status: string; favourable_interval: string; leaf_wetness_proxy: string; window: string
@@ -52,6 +63,9 @@ export interface Risk {
   explanation?: string
   method?: string
   coverage?: number
+  level_text?: string
+  period?: { start: string; end: string; basis: string }
+  daily?: DailyRisk[]
 }
 export interface Advisory {
   level: 'info' | 'watch' | 'warning' | 'alert'
@@ -69,7 +83,11 @@ export interface Advisory {
 }
 export interface Candidate { label: string; crop: string; condition: string; healthy: boolean; score: number }
 export interface ImageResult {
-  status: 'ok' | 'unavailable'
+  status: 'ok' | 'unavailable' | 'quality_failed'
+  quality?: Quality
+  region?: Region | null
+  quality_override?: boolean
+  quality_limited?: boolean
   error?: string
   label?: string
   crop?: string
@@ -111,8 +129,14 @@ export interface CropInfo {
 }
 export interface ModelCatalog { available: boolean; version: string; error: string | null; crops: CropInfo[]; weather_model: Record<string, string> }
 export interface GeoResult { name: string; state?: string | null; country?: string | null; lat: number; lon: number }
+export interface ChatMessage { role: 'user' | 'assistant'; content: string }
+export interface ChatReply {
+  status: 'ok' | 'unavailable'; reply?: string; error?: string; hint?: string | null; guard_blocked?: boolean
+  grounding?: { place: string; crop: string; weather_status: string; risk_level: string | null; image: string | null }
+}
 export interface Health {
   status: string
+  chat?: { configured: boolean; model: string | null }
   model: { available: boolean; error?: string | null; version?: string }
   weather: { live_configured: boolean }
   database: { mode: string; configured: boolean; connected: boolean; persistent: boolean; backend: string | null; error?: string | null }
@@ -157,15 +181,22 @@ export const api = {
       ...(sel.kind === 'farm' ? { farm_id: sel.farmId } : { location: { lat: sel.lat, lon: sel.lon, label: sel.label ?? null } }),
       crop, mode, image, record, refresh,
     })),
-  diagnose: (file: File, farm_id: number | null, crop: string | null) => {
+  diagnose: (file: File, farm_id: number | null, crop: string | null, region: Region | null = null, force = false) => {
     const fd = new FormData()
     fd.append('file', file)
     if (farm_id != null) fd.append('farm_id', String(farm_id))
     if (crop) fd.append('crop', crop)
+    if (region) fd.append('region', [region.x, region.y, region.w, region.h].map((v) => v.toFixed(4)).join(','))
+    if (force) fd.append('force', 'true')
     return req<ImageResult>('/api/v1/diagnose-image', { method: 'POST', body: fd })
   },
   history: (farm_id: number | null) =>
     req<{ persistent: boolean; backend: string | null; entries: Assessment[] }>(`/api/v1/risk/history${farm_id ? `?farm_id=${farm_id}` : ''}`),
+  chat: (messages: ChatMessage[], sel: Selection, crop: string | null, mode: Mode, image: ImageResult | null) =>
+    req<ChatReply>('/api/v1/chat', json('POST', {
+      messages, crop, mode, image,
+      ...(sel.kind === 'farm' ? { farm_id: sel.farmId } : { location: { lat: sel.lat, lon: sel.lon, label: null } }),
+    })),
   alerts: () => req<{ persistent: boolean; unacknowledged: number; alerts: Alert[] }>('/api/v1/alerts'),
   acknowledge: (id: number) => req<Alert>(`/api/v1/alerts/${id}/acknowledge`, { method: 'POST' }),
 }

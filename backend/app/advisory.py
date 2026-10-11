@@ -45,7 +45,12 @@ def build(risk: dict | None, image: dict | None, crop: str | None = None) -> dic
     if image and image.get("status") == "ok":
         cond, score, label = image["condition"], image["score"], image["label"]
         info = catalog.entry(label)
-        if image.get("single_class_crop"):
+        if image.get("quality_override"):
+            problems = " ".join(c["message"] for c in (image.get("quality") or {}).get("checks", []) if c["status"] == "fail")
+            img_text = (f"The photo did not pass the quality check ({problems}) but was analysed anyway, so the result "
+                        f"('{cond}', score {score:.0%}) is not reliable. Please retake the photo.")
+            level, headline = "watch", "Photo quality too low – retake photo"
+        elif image.get("single_class_crop"):
             img_text = (f"The model has only one class for {image['crop']} ('{cond}'), so it cannot tell healthy from diseased leaves "
                         f"for this crop (raw score {score:.0%}). Use field inspection instead.")
             level, headline = "watch", "Image screening is limited for this crop"
@@ -80,7 +85,13 @@ def build(risk: dict | None, image: dict | None, crop: str | None = None) -> dic
                 img_text += " Note: the weather index covers late blight only, not this condition."
             if w_state == "Low" and not high:
                 img_text += " Low weather risk does not cancel a suspicious image — still inspect the plant."
+        if image.get("quality_limited") and not image.get("quality_override"):
+            img_text += " Photo quality is limited (" + " ".join(c["message"] for c in (image.get("quality") or {}).get("checks", [])) + ") A clearer photo would make this result more dependable."
         evidence.append({"source": "image", "text": img_text})
+    elif image and image.get("status") == "quality_failed":
+        problems = " ".join(c["message"] for c in (image.get("quality") or {}).get("checks", []) if c["status"] == "fail")
+        evidence.append({"source": "image", "text": f"The photo was not analysed because of its quality: {problems}"})
+        inspect.insert(0, "Retake the leaf photo: close-up, in focus, in daylight.")
     elif image and image.get("status") == "unavailable":
         evidence.append({"source": "image", "text": "Leaf-image classification is unavailable; the weather assessment still applies."})
     else:

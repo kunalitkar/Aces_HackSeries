@@ -15,6 +15,9 @@ MODEL_VERSION = "efficientnet_v2_s@BiernyVR/crop-disease-classifier (weights sha
 UPLOAD_DIR = Path(os.getenv("AGRISENTRY_UPLOAD_DIR", "").strip() or ROOT / "data" / "uploads")  # image files; DB stores references only
 
 OWM_API_KEY = os.getenv("OPENWEATHER_API_KEY", "").strip()
+# Chat helper (Ask AgriSentry). Key stays server-side. Model is configurable because Groq retires models over time.
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+GROQ_MODEL = os.getenv("GROQ_MODEL", "").strip() or "llama-3.3-70b-versatile"
 # e.g. mysql+pymysql://user:pass@localhost:3306/agrisentry (any SQLAlchemy URL works)
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 CORS_ORIGINS = [o.strip() for o in (os.getenv("CORS_ORIGINS", "").strip() or "http://localhost:5173,http://127.0.0.1:5173").split(",") if o.strip()]

@@ -24,9 +24,18 @@ def hermetic(monkeypatch, tmp_path):
     db.init("")
 
 
-def jpeg_bytes(size=(300, 300), color=(60, 140, 60), fmt="JPEG"):
+def textured(size=(300, 300), seed=0):
+    """Synthetic sharp, mid-brightness image (passes the quality gate); not a leaf."""
+    import numpy as np
+    rng = np.random.default_rng(seed)
+    a = rng.integers(40, 200, (size[1], size[0], 3), dtype=np.uint8)
+    a[..., 1] = np.clip(a[..., 1].astype(int) + 40, 0, 255)
+    return Image.fromarray(a)
+
+
+def jpeg_bytes(size=(300, 300), color=None, fmt="JPEG", img=None):
     b = io.BytesIO()
-    Image.new("RGB", size, color).save(b, fmt)
+    (img or (Image.new("RGB", size, color) if color else textured(size))).save(b, fmt)
     return b.getvalue()
 
 
@@ -109,6 +118,7 @@ def test_upload_validation():
     post = lambda name, data, typ: client.post("/api/v1/diagnose-image", files={"file": (name, data, typ)})
     assert post("a.txt", b"hello", "text/plain").status_code == 422
     assert post("a.jpg", jpeg_bytes((20, 20)), "image/jpeg").status_code == 422
+    assert post("a.jpg", b"\xff\xd8\xff\xe0garbage", "image/jpeg").status_code == 422  # corrupted JPEG
     assert post("a.jpg", b"", "image/jpeg").status_code == 400
     assert post("a.jpg", b"0" * (config.MAX_UPLOAD_BYTES + 10), "image/jpeg").status_code == 413
     gif = io.BytesIO(); Image.new("RGB", (100, 100)).save(gif, "GIF")

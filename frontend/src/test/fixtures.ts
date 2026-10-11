@@ -33,11 +33,28 @@ export const weatherLive = (name: string, temp: number) => ({
 const riskOk = (index: number, category: string) => ({
   status: 'ok', index, category, explanation: `scores ${index}/100`, trend: [], peak: null, peak_48h: null, stale: false, favourable_hours_48h: 3,
   intervals: [{ time: '2026-10-11T09:55:00+05:30', hours: 3, favourable: true, kind: 'observed' }],
-  factors: [{ key: 'duration', label: 'Favourable-hours run', points: index > 50 ? 50 : 0, max_points: 50, detail: 'd', available: true }],
+  factors: [
+    { key: 'duration', label: 'Favourable-hours run', points: index > 50 ? 50 : 0, max_points: 50, detail: 'd', available: true,
+      name: 'Cool, wet hours in a row', value: index > 50 ? 12 : 0, unit: 'h', interpretation: index > 50 ? '12 hours in a row were cool and wet' : 'No hours were both cool enough and wet enough', why: 'Spores need wet leaves.' },
+    { key: 'rain', label: 'Rainfall / leaf wetness', points: 0, max_points: 10, detail: 'missing', available: false,
+      name: 'Rain', value: null, unit: 'mm', interpretation: 'Data unavailable', why: 'Rain wets leaves.' },
+  ],
+  level_text: index > 50 ? 'Conditions are strongly favourable for late blight according to this model.' : 'Weather is currently less favourable for late blight. Continue normal monitoring.',
+  period: { start: '2026-10-11T10:00:00+05:30', end: '2026-10-11T22:00:00+05:30', basis: index > 50 ? 'simulated' : 'current observation + forecast' },
+  daily: [
+    { date: '2026-10-11', index, category, peak_time: '2026-10-11T18:00:00+05:30', main_factor: index > 50 ? 'Cool, wet hours in a row' : null, main_factor_reading: 'r',
+      action: index > 50 ? 'Inspect promptly; seek local advice if you see symptoms.' : 'Normal monitoring.', basis: 'forecast', partial: true, windows: 4,
+      weather: { temp_min: 18, temp_max: 24, rh_mean: 88, rain_mm: null, description: 'light rain' } },
+    { date: '2026-10-12', index: 30, category: 'Moderate', peak_time: '2026-10-12T06:00:00+05:30', main_factor: 'Humidity (average)', main_factor_reading: 'r',
+      action: 'Check the crop during the day.', basis: 'forecast', partial: false, windows: 8,
+      weather: { temp_min: 20, temp_max: 29, rh_mean: 75, rain_mm: 0, description: 'clouds' } },
+  ],
   rules: { disease: 'Late blight', status: 'Experimental', favourable_interval: '10–27 °C', leaf_wetness_proxy: 'RH ≥ 90 %', window: 'next 12 h', components: [{ key: 'duration', max: 50, rule: 'run' }], categories: 'Low < 25', missing_data: 'skipped' },
 })
 
-export interface MockOpts { live?: boolean; holdFarm2?: boolean; weatherError?: boolean }
+export interface MockOpts { live?: boolean; holdFarm2?: boolean; weatherError?: boolean; qualityFail?: boolean; chat?: 'ok' | 'off' | 'error' | 'guarded' }
+export let lastChatBodies: Record<string, any>[] = []
+export let lastDiagnoseForms: FormData[] = []
 export let lastForecastBodies: Record<string, unknown>[] = []
 export let release: (() => void) | null = null
 export const alertsState: { alerts: Record<string, unknown>[] } = { alerts: [] }
@@ -66,10 +83,20 @@ export function forecastFor(body: Record<string, unknown>, opts: MockOpts) {
 
 export function installFetch(opts: MockOpts = {}) {
   lastForecastBodies = []
+  lastDiagnoseForms = []
+  lastChatBodies = []
   release = null
   vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
     const ok = (b: unknown) => ({ ok: true, status: 200, json: async () => b })
-    if (url.includes('/api/health')) return ok({ status: 'ok', model: { available: true }, weather: { live_configured: !!opts.live }, database: { mode: 'demo', configured: false, connected: true, persistent: false, backend: 'sqlite' } })
+    if (url.includes('/api/health')) return ok({ status: 'ok', model: { available: true }, weather: { live_configured: !!opts.live }, chat: { configured: opts.chat !== 'off', model: opts.chat === 'off' ? null : 'test-model' }, database: { mode: 'demo', configured: false, connected: true, persistent: false, backend: 'sqlite' } })
+    if (url.includes('/api/v1/chat')) {
+      const body = JSON.parse(init!.body as string)
+      lastChatBodies.push(body)
+      if (opts.chat === 'error') return ok({ status: 'unavailable', error: 'Groq rate limit reached (HTTP 429).', hint: 'Wait a minute and ask again.' })
+      const n = body.messages.length
+      return ok({ status: 'ok', reply: opts.chat === 'guarded' ? "I can't recommend chemicals, doses or spray schedules. Please ask your local KVK." : `Answer ${n}: check lower leaves.`,
+        guard_blocked: opts.chat === 'guarded', grounding: { place: 'x', crop: 'Tomato', weather_status: 'demo', risk_level: 'Low', image: null } })
+    }
     if (url.includes('/model/classes')) return ok(catalog)
     if (url.includes('/acknowledge')) {
       const id = Number(url.split('/').at(-2))
@@ -81,9 +108,17 @@ export function installFetch(opts: MockOpts = {}) {
     if (url.includes('/farms')) return ok(farms)
     if (url.includes('/risk/history')) return ok({ persistent: false, backend: 'sqlite', entries: [] })
     if (url.includes('/diagnose-image')) {
-      const crop = (init!.body as FormData).get('crop')
+      const form = init!.body as FormData
+      lastDiagnoseForms.push(form)
+      const crop = form.get('crop')
+      const forced = form.get('force') === 'true'
+      const failQ = { status: 'fail', note: 'n', metrics: {}, checks: [{ key: 'sharpness', status: 'fail', value: 3, message: 'The photo is blurry. Please hold the phone steady and take another photo.' }] }
+      if (opts.qualityFail && !forced) return ok({ status: 'quality_failed', quality: failQ, region: null, selected_crop: crop, model_version: 'test' })
+      const r = form.get('region')
       return ok({ status: 'ok', label: `${crop}___healthy`, crop, condition: 'healthy', healthy: true, score: 0.8, selected_crop: crop, crop_mass: 0.9,
-        top3: [{ label: `${crop}___healthy`, crop, condition: 'healthy', healthy: true, score: 0.8 }], unrestricted_top3: [], uncertain: false, latency_ms: 50, model_version: 'test' })
+        top3: [{ label: `${crop}___healthy`, crop, condition: 'healthy', healthy: true, score: 0.8 }], unrestricted_top3: [], uncertain: forced, latency_ms: 50, model_version: 'test',
+        quality: forced ? failQ : { status: 'ok', checks: [], note: 'n', metrics: {} }, quality_override: forced, quality_limited: false,
+        region: r ? Object.fromEntries(['x', 'y', 'w', 'h'].map((k, i) => [k, Number(String(r).split(',')[i])])) : null })
     }
     if (url.includes('/risk/forecast')) {
       const body = JSON.parse(init!.body as string)

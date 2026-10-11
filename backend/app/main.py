@@ -1,13 +1,12 @@
 from __future__ import annotations
 import hashlib
-import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import Any, Literal
 from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from . import advisory, config, db, model, risk, weather
+from . import advisory, chat, config, db, model, risk, weather
 
 
 @asynccontextmanager
@@ -61,7 +60,7 @@ def _resolve(farm_id: int | None, location: Coordinates | None) -> dict:
 @app.get("/api/health")
 def health() -> dict:
     return {"status": "ok", "time": datetime.now(timezone.utc).isoformat(), "model": model.status(),
-            "weather": {"live_configured": bool(config.OWM_API_KEY)}, "database": db.status()}
+            "weather": {"live_configured": bool(config.OWM_API_KEY)}, "chat": chat.status(), "database": db.status()}
 
 
 # ---------- farms & locations ----------
@@ -177,15 +176,25 @@ def advisories(farm_id: int, mode: Mode = "live", crop: str | None = None) -> di
 
 # ---------- image ----------
 @app.post("/api/v1/diagnose-image")
-async def diagnose_image(file: UploadFile = File(...), farm_id: int | None = Form(None), crop: str | None = Form(None)) -> dict:
+async def diagnose_image(file: UploadFile = File(...), farm_id: int | None = Form(None), crop: str | None = Form(None),
+                         region: str | None = Form(None), force: bool = Form(False)) -> dict:
+    """region: optional user-selected leaf area "x,y,w,h" as fractions of the original image.
+    force: classify even if the photo fails the quality check (result is then marked uncertain)."""
     crop = _check_crop(crop) if crop else None
+    box = None
+    if region:
+        try:
+            box = tuple(float(v) for v in region.split(","))
+            assert len(box) == 4
+        except (ValueError, AssertionError):
+            raise HTTPException(422, "region must be 'x,y,w,h' fractions between 0 and 1.")
     data = await file.read(config.MAX_UPLOAD_BYTES + 1)
     if not data:
         raise HTTPException(400, "Uploaded file is empty.")
     if len(data) > config.MAX_UPLOAD_BYTES:
         raise HTTPException(413, f"Image exceeds the {config.MAX_UPLOAD_BYTES // (1024 * 1024)} MB limit.")
     try:
-        res = model.classify(data, crop)
+        res = model.classify(data, crop, box, force)
     except model.ImageRejected as e:
         raise HTTPException(422, str(e))
     except Exception as e:
@@ -195,8 +204,10 @@ async def diagnose_image(file: UploadFile = File(...), farm_id: int | None = For
         import io
         fmt = Image.open(io.BytesIO(data)).format
         config.UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-        ref = f"{uuid.uuid4().hex}{EXT.get(fmt, '.img')}"
-        (config.UPLOAD_DIR / ref).write_bytes(data)
+        # The ORIGINAL photo is kept (named by content hash, so re-analysing another leaf of it stores no copy).
+        ref = f"{hashlib.sha256(data).hexdigest()[:32]}{EXT.get(fmt, '.img')}"
+        if not (config.UPLOAD_DIR / ref).exists():
+            (config.UPLOAD_DIR / ref).write_bytes(data)
         res["image_ref"] = ref
         db.save_image(farm_id, res, file.filename, ref)
     return res
@@ -221,3 +232,36 @@ def acknowledge(alert_id: int) -> dict:
     if not a:
         raise HTTPException(404, f"Alert {alert_id} not found")
     return a
+
+
+# ---------- Ask AgriSentry (chat grounded in the current assessment) ----------
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(max_length=chat.MAX_MESSAGE_CHARS * 2)
+
+
+class ChatRequest(BaseModel):
+    messages: list[ChatMessage] = Field(min_length=1, max_length=40)
+    farm_id: int | None = None
+    location: Coordinates | None = None
+    crop: str | None = None
+    mode: Mode = "live"
+    image: dict[str, Any] | None = None
+
+
+@app.post("/api/v1/chat")
+def ask_agrisentry(req: ChatRequest) -> dict:
+    """The assessment is recomputed here from the server's own engines; nothing numeric is trusted from the client."""
+    if not config.GROQ_API_KEY:  # fail fast: do not spend weather/API calls when chat cannot answer
+        return chat.ask([m.model_dump() for m in req.messages], "")
+    place = _resolve(req.farm_id, req.location)
+    crop = _check_crop(req.crop) or place["crop"] or "Tomato"
+    w, r = _assess(place, crop, req.mode, False)
+    image = req.image if req.image and (req.image.get("selected_crop") in (None, crop)) else None
+    adv = advisory.build(r, image, crop)
+    label = place["label"] if place["kind"] == "farm" else "the farmer's chosen location"  # never send coordinates
+    ctx = chat.build_context(label, crop, req.mode, w, r, adv, image)
+    res = chat.ask([m.model_dump() for m in req.messages], ctx)
+    res["grounding"] = {"place": label, "crop": crop, "weather_status": w["status"], "risk_level": r.get("category"),
+                        "image": (image or {}).get("label")}
+    return res

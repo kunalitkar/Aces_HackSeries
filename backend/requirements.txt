@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+sqlalchemy
+pymysql
+onnxruntime
+pillow
+numpy
+python-multipart
+httpx
+pytest

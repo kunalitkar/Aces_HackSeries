@@ -1,88 +1,61 @@
-# AgriSentry — Handoff (mid-evaluation MVP → final evaluation)
+# AgriSentry — Handoff (state after Phase 2/3, 2026-10-11)
+
+See `README.md` for setup, configuration and the method summary. This file records **verified state, evidence and open items**.
 
 ## Architecture
 ```
-D:\AgriSentry
-├─ models\                    efficientnet_v2_s_best.onnx (+ .onnx.data external weights), classes.json
-│                             (copied from the originals in the project root; originals untouched)
-├─ data\plantdoc_samples\     18 PlantDoc TEST-split tomato images: late_blight\ (10), healthy\ (8)
-├─ backend\                   Python 3.11 venv at backend\.venv
-│  ├─ app\main.py             FastAPI routes
-│  ├─ app\risk.py             late-blight favourability engine (heuristic, documented in docstring)
-│  ├─ app\weather.py          OpenWeatherMap (free /weather + /forecast, 3-hourly) + 2 simulated scenarios
-│  ├─ app\model.py            ONNX Runtime CPU session (loaded once), preprocessing, softmax, label parsing
-│  ├─ app\advisory.py         combines weather risk + image result into farmer advice
-│  ├─ app\db.py               SQLAlchemy models (Farm, WeatherObservation, RiskAssessment, ImagePrediction, Alert)
-│  ├─ tests\test_backend.py   13 pytest tests
-│  └─ scripts\                fetch_plantdoc_samples.py, eval_plantdoc.py
-└─ frontend\                  React 19 + Vite + TS + Tailwind v4 + Recharts + lucide
-   └─ src\ App.tsx (shell), useAgri.ts (state), pages.tsx (5 views), ui.tsx (gauge/charts), api.ts, App.test.tsx
+backend/app/
+  main.py      FastAPI routes (lifespan startup: db.init, model.load)
+  config.py    env config (backend/.env via python-dotenv; blank values = default)
+  model.py     ONNX session (once), preprocessing per model card, crop-conditioned interpretation, class catalogue
+  risk.py      late-blight favourability engine + RULES export + applicability (tomato/potato only)
+  weather.py   OpenWeatherMap current + 5-day forecast + geocoding; 5-min success cache; demo scenarios
+  advisory.py  evidence-based advisory builder; severity explicitly unavailable
+  catalog.py   per-class symptoms/prevention for all 26 disease classes (no pesticide names/doses)
+  db.py        SQLAlchemy: farms, weather_observations, risk_assessments (legacy), image_predictions,
+               assessments, alerts; MySQL or in-memory SQLite; additive-only migration
+backend/scripts/  download_model.py · fetch_plantdoc_samples.py · eval_plantdoc.py
+frontend/src/     App.tsx · useAgri.ts (state; selection = farm | ad-hoc location) · pages.tsx · LocationControls.tsx
+                  ui.tsx · report.ts · api.ts · *.test.tsx · test/fixtures.ts
+frontend/e2e/run.mjs  real-browser E2E (playwright-core + installed Microsoft Edge)
+data/             plantdoc_samples/ (PlantDoc TEST split, 27 classes) · eval/ · e2e/ screenshots · uploads/ (git-ignored)
 ```
-Image prediction, weather favourability and the combined advisory are computed separately. The image result never feeds the weather index.
-No prototype (plain HTML/JS) or earlier model code was found in the workspace, so everything was built fresh.
 
-## Run locally (verified commands)
-Backend (PowerShell, from `D:\AgriSentry\backend`):
-```
-.\.venv\Scripts\python -m uvicorn app.main:app --port 8000
-```
-Model weights are not in git: run `.\.venv\Scripts\python scripts\download_model.py` once (downloads from Hugging Face and verifies SHA-256).
-Recreate the venv if needed: `py -3.11 -m venv .venv; .\.venv\Scripts\python -m pip install -r requirements.txt`
-Frontend (from `D:\AgriSentry\frontend`): `npm install` then `npm run dev` → http://localhost:5173 (Vite proxies `/api` to 127.0.0.1:8000).
-Tests: `.\.venv\Scripts\python -m pytest -q` (backend), `npm test` and `npm run build` (frontend).
-PlantDoc sanity eval: `.\.venv\Scripts\python scripts\eval_plantdoc.py`
+## API
+`GET /api/health` · `GET/POST /api/v1/farms` · `DELETE /api/v1/farms/{id}` (user farms only) · `GET /api/v1/geocode?q=` ·
+`GET /api/v1/model/classes` · `GET /api/v1/weather` · `POST /api/v1/risk/forecast` (farm_id **or** location{lat,lon}, crop, mode, image, record, refresh) ·
+`POST /api/v1/diagnose-image` (file, crop, farm_id) · `GET /api/v1/advisories` · `GET /api/v1/risk/history` · `GET /api/v1/alerts` · `POST /api/v1/alerts/{id}/acknowledge`
 
-## Environment variables (all optional)
-| Var | Effect |
+## Verified (evidence)
+| Area | Evidence |
 |---|---|
-| `OPENWEATHER_API_KEY` | enables Live mode. Unset → Live shows "unavailable" (never silently replaced by demo data). When set, the UI defaults to Live. |
-| `DATABASE_URL` | e.g. `mysql+pymysql://user:pass@localhost:3306/agrisentry`. Tables auto-created and farms seeded at startup. Unset → demo mode: history is the server session (volatile) or labelled synthetic entries. |
-| `AGRISENTRY_MODEL_DIR` | override model folder (default `..\models`) |
-| `CORS_ORIGINS` / frontend `VITE_API_URL` | for separate frontend/backend hosting |
+| Model assets | ONNX + `.onnx.data` SHA-256 match Hugging Face LFS oids; `classes.json` identical JSON; model-card `sample_leaf.jpg` → Apple___Apple_scab (0.90) |
+| Preprocessing | identical to model card (RGB, bilinear 224, /255, ImageNet mean/std, CHW); EXIF rotation added for phone photos |
+| Earlier "model unavailable" | caused by a blank `AGRISENTRY_MODEL_DIR=` in `.env`; fixed (blank = default) + regression test |
+| PlantDoc evaluation | 236 images / 27 classes: unrestricted 20.3 %, crop-conditioned 39.2 % (204 images, multi-class crops). Report: `data/eval/plantdoc_eval.md` |
+| Live OpenWeatherMap | real calls succeed with the configured key (Nashik/Kolar current + 41-point forecast), exercised in E2E |
+| Backend tests | 43/43 pytest (OWM responses mocked in tests) |
+| Frontend tests | 14/14 vitest (geolocation consent/granted/denied/timeout/unsupported, crop catalogue, farm switch, alerts, report) + `npm run build` |
+| Real-browser E2E | headless Edge against the real backend, live weather and real ONNX: no geolocation request on load; granted permission → current-location weather, nothing saved; denied → message + manual selection intact; real inference on a PlantDoc late-blight photo (98 %); 14 crops listed; scenario switch; save → history; alert acknowledge; desktop menu hidden; 390 px mobile no horizontal scroll on 5 views; no console errors |
+| Persistence logic | SQLite file DB persists across re-init; additive migration of an MVP-era `alerts` table keeps data; bad URL falls back to labelled memory |
 
-## What works and how it was verified
-| Item | Evidence |
-|---|---|
-| Model loads; input `[N,3,224,224]` float, output `logits [N,38]`; 38 classes in `classes.json` match output dim | inspected with onnxruntime; `test_label_mapping`, `/api/health` |
-| Real inference, preprocessing: RGB, bilinear resize 224×224 (no crop), /255, ImageNet mean/std from `classes.json` | `test_inference_*`; ~70 ms CPU per image on this laptop |
-| Upload validation (type, ≥64 px, ≤8 MB, empty, unreadable, GIF) | `test_upload_validation`; also client-side checks in UI test |
-| Risk engine bounds, factor points sum exactly to index, normal=Low vs conducive=High/Very High, missing values skipped not zero-filled | `test_scenarios_*`, `test_missing_values_*` |
-| Scenario switch changes weather, index, factors, trend, advisory consistently | `test_forecast_endpoint_*`, frontend test |
-| Live weather failure handling (no key, network error) | `test_live_weather_*` (mocked failure; no real key used) |
-| Advisory combos (high+LB, high+healthy, low+LB, non-tomato, weather/model missing) | `test_advisory_combinations` |
-| DB layer | `test_database_layer_with_sqlite` — SQLAlchemy models exercised on **SQLite** |
-| End-to-end through Vite proxy | curl against :5173: health, forecast (conducive → 73 High), image upload (late blight sample → Tomato___Late_blight 0.90), live-without-key → unavailable |
+## NOT verified / blocked
+- **MySQL**: MySQL Server 8.0 is installed and running locally (service `MySQL80`, port 3306) but no credentials are configured (`DATABASE_URL` empty). The same SQLAlchemy path is tested on SQLite. To verify: create a user, set `DATABASE_URL=mysql+pymysql://agrisentry:<pw>@localhost:3306/agrisentry` in `backend/.env`, restart, check `/api/health` → `database.persistent: true, backend: mysql`, save an assessment, restart, confirm it is still in History.
+- **Docker image**: `backend/Dockerfile` written but not built (Docker not installed here).
+- **Deployment**: nothing deployed; no Vercel/Render/managed-MySQL accounts available in this session. No production URLs exist.
+- Live-weather unit tests use mocked payloads; the live path is verified only via the E2E run.
 
-Results: backend **13/13 pytest passed**; frontend **3/3 vitest passed** (navigation, scenario switch, upload rejection; Recharts stubbed); `npm run build` succeeds.
+## Known limitations
+- Image model generalises poorly to field photos (tomato healthy 0/8, mosaic 0/10, leaf mold 0/6 even crop-conditioned).
+- Late-blight index thresholds are heuristics (Smith-period-inspired), unvalidated: needs agronomist review/local validation.
+- Free OWM plan gives 3-hour steps; favourable-run length is step-approximated.
+- Uploaded photos are stored on local disk (`data/uploads`); on ephemeral hosts use a persistent disk or object storage.
+- No authentication; single demo user. Seed farms cannot be deleted.
 
-### PlantDoc sanity check — important caveat
-18 test-split tomato images: **5/18 exact class matches** (late blight 5/10; healthy 0/8). Failures include healthy leaves predicted as Early blight / Septoria / bell-pepper healthy, and late blight predicted as Strawberry leaf scorch or Early blight. The model is PlantVillage-style (lab) and does **not** generalise well to field photos. This is a tiny sample, not a benchmark, but the direction is clear. The UI warns about this; do not quote the model's 99.9 % val accuracy as field accuracy.
+## Deliberately not done
+Fine-tuning (see next actions), severity estimation (no defensible validated method), SMS/WhatsApp, auth.
 
-## Not tested / blocked
-- **Not tested in a real browser** (no Playwright/screenshots run). Layout, responsiveness and chart rendering are only verified by a successful build and jsdom tests. Do a visual pass first.
-- **Live OpenWeatherMap**: no API key available; only failure paths tested. Free plan gives 3-hourly 5-day forecast (used); hourly forecast needs a paid plan. Response parsing is untested against a real payload.
-- **MySQL**: not installed here. `pymysql` is in requirements; code path tested only via SQLite.
-- Production deployment (Vercel / Python host) not attempted.
-
-## Known issues / design notes
-- Risk thresholds are documented heuristics (Smith-period-inspired), not validated; need agronomist review.
-- 3-hourly live data: favourable "run" length is approximated as steps × step-hours.
-- `@app.on_event` is deprecated (works; migrate to lifespan). Frontend bundle is 666 kB (no code-splitting).
-- Notification bell/profile menu are derived from current state only (no persistent alerts UI beyond the History page).
-- Visual severity is deliberately not implemented; UI says it requires field inspection.
-- Profile menu is a prototype stub (no authentication).
-
-## Deliberately deferred
-Fine-tuning / training, full PlantDoc benchmark, multi-crop support, severity estimation, SMS/WhatsApp, auth, Vercel/production DB.
-
-## Top 3 next actions for final evaluation
-1. **Fix field-photo generalisation**: evaluate on more PlantDoc tomato test images, try restricting softmax to tomato classes (only if input is known tomato), and consider fine-tuning on PlantDoc *train* split with the test split held out; keep the honest caveat until improved.
-2. **Real-world verification pass**: add an OpenWeatherMap key and confirm live mode; run the app in a browser on desktop + phone width (fix any layout issues, take screenshots); configure a MySQL instance and verify persistence.
-3. **Deploy and harden**: frontend to Vercel (`VITE_API_URL`), backend to a Python host that can ship the ONNX `.data` weights (set `CORS_ORIGINS`), managed MySQL; have an agronomist review the risk thresholds and advisory wording.
-
-## Phase 1 update — OpenWeatherMap integration
-- Backend `app/weather.py`: `/data/2.5/weather` + `/data/2.5/forecast` (units=metric), 5-min in-memory cache (successes only; bypass with `refresh`), 8 s timeout, explicit errors for missing/invalid/not-yet-activated key (401), 404, 429, timeout, network, malformed JSON. Points carry temp, feels-like, RH, pressure, wind, condition/icon, rain, pop; missing values stay `null`. Location name/coords, UTC offset, observed + fetched times are returned.
-- Key is read from `OPENWEATHER_API_KEY` (env or git-ignored `backend/.env`, loaded via python-dotenv). httpx logging is muted so the key is never logged. Only the public icon images load directly from openweathermap.org in the browser (no key).
-- `GET /api/v1/weather?farm_id&mode&refresh` and `POST /api/v1/risk/forecast` (now accepts `refresh`). No geocoding endpoint: the farm selector uses fixed coordinates, so it was not needed.
-- Frontend: Weather Outlook shows location, live/demo/unavailable badge, current conditions, 5-day 3-hour chart + table, observed/last-updated times in the location's UTC offset, manual Refresh; switching farm/source clears old data first. Risk engine untouched.
-- Tests: backend 23/23 (OWM paths use MOCKED payloads), frontend 6/6. A real HTTP 401 from OpenWeatherMap with a fake key was verified; **a successful live call has NOT been verified because no key was available here.**
+## Highest-value next actions
+1. **Fine-tune on the PlantDoc *train* split** (test split held out, already used for evaluation): needs PyTorch and the `.pth` checkpoint from the HF repo; the evaluation shows a large field-photo gap. Re-run `eval_plantdoc.py` before/after; keep crop-conditioning.
+2. **Verify MySQL** with real credentials (steps above), then provision managed MySQL.
+3. **Deploy**: Docker backend (Render blueprint included), Vercel frontend with `VITE_API_URL`, set `CORS_ORIGINS`; re-run `e2e/run.mjs` with `E2E_URL` against production (geolocation needs HTTPS).

@@ -1,0 +1,9 @@
+**/.venv
+**/node_modules
+frontend
+data
+models/*.onnx
+models/*.onnx.data
+**/.env
+**/__pycache__
+.git

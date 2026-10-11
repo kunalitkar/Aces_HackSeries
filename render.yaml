@@ -1,0 +1,15 @@
+# Render blueprint for the FastAPI backend (Docker). Secrets are set in the Render dashboard, not here.
+services:
+  - type: web
+    name: agrisentry-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false   # mysql+pymysql://user:pass@host:3306/agrisentry
+      - key: CORS_ORIGINS
+        sync: false   # https://<your-app>.vercel.app

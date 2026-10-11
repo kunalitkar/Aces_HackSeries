@@ -2,6 +2,12 @@ import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+
+try:  # backend/.env (git-ignored) is the supported place for secrets
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+except ImportError:
+    pass
 MODEL_DIR = Path(os.getenv("AGRISENTRY_MODEL_DIR", ROOT / "models"))
 MODEL_PATH = MODEL_DIR / "efficientnet_v2_s_best.onnx"
 CLASSES_PATH = MODEL_DIR / "classes.json"

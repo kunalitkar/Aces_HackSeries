@@ -9,3 +9,4 @@ numpy
 python-multipart
 httpx
 pytest
+python-dotenv

@@ -10,10 +10,16 @@ from fastapi.testclient import TestClient
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-os.environ.pop("OPENWEATHER_API_KEY", None)
 from app import advisory, config, main, model, risk, weather  # noqa: E402
 
 client = TestClient(main.app)
+
+
+@pytest.fixture(autouse=True)
+def no_key_no_cache(monkeypatch):
+    """Hermetic: never use a real key from backend/.env, never reuse cached weather."""
+    monkeypatch.setattr(config, "OWM_API_KEY", "")
+    weather._cache.clear()
 SAMPLES = config.ROOT / "data" / "plantdoc_samples"
 
 
@@ -157,3 +163,104 @@ def test_database_layer_with_sqlite(tmp_path, monkeypatch):
     kinds = {e["type"] for e in db.history(1)}
     assert kinds == {"risk", "image"}
     db._engine = None
+
+
+# ---- OpenWeatherMap integration (responses below are MOCKED fixtures shaped like the real API) ----
+import time as _time
+import httpx
+
+_NOW = int(_time.time())
+CUR = {"coord": {"lon": 73.79, "lat": 20.0}, "weather": [{"main": "Clouds", "description": "scattered clouds", "icon": "03d"}],
+       "main": {"temp": 27.3, "feels_like": 29.1, "pressure": 1009, "humidity": 61}, "wind": {"speed": 3.2},
+       "dt": _NOW, "sys": {"country": "IN"}, "timezone": 19800, "name": "Nashik"}
+FC = {"city": {"name": "Nashik", "country": "IN", "timezone": 19800},
+      "list": [{"dt": _NOW + 3600 * 3 * (i + 1), "main": {"temp": 25.0 - i * 0.1, "feels_like": 26.0, "pressure": 1008, "humidity": 70 + i % 20},
+                "wind": {"speed": 2.0}, "weather": [{"main": "Rain", "description": "light rain", "icon": "10d"}],
+                "pop": 0.4, **({"rain": {"3h": 0.8}} if i % 5 == 0 else {})} for i in range(40)]}
+
+
+class FakeClient:
+    calls = 0
+
+    def __init__(self, cur=(200, CUR), fc=(200, FC), exc=None):
+        self.cur, self.fc, self.exc = cur, fc, exc
+
+    def __call__(self, **k):
+        return self
+
+    def __enter__(self): return self
+    def __exit__(self, *a): pass
+
+    def get(self, url, params=None):
+        FakeClient.calls += 1
+        assert params["units"] == "metric" and "appid" in params
+        if self.exc:
+            raise self.exc
+        code, body = self.cur if url.endswith("/weather") else self.fc
+        return httpx.Response(code, json=body, request=httpx.Request("GET", url))
+
+
+def use(monkeypatch, **kw):
+    monkeypatch.setattr(config, "OWM_API_KEY", "test-key")
+    FakeClient.calls = 0
+    monkeypatch.setattr(httpx, "Client", FakeClient(**kw))
+
+
+def test_live_success_structure(monkeypatch):
+    use(monkeypatch)
+    r = client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live"}).json()
+    assert r["status"] == "live" and r["source"] == "OpenWeatherMap" and r["farm"]["id"] == 1
+    assert r["location"]["name"] == "Nashik" and r["utc_offset_seconds"] == 19800 and r["fetched_at"] and r["observed_at"]
+    c = r["current"]
+    assert (c["temp_c"], c["feels_like_c"], c["rh"], c["pressure_hpa"], c["wind_ms"], c["icon"]) == (27.3, 29.1, 61, 1009, 3.2, "03d")
+    assert len(r["series"]) == 41 and r["series"][1]["pop"] == 0.4 and r["series"][1]["rain_mm"] == 0.8
+    assert "T" in r["series"][2]["time"] and r["series"][2]["time"].endswith("+05:30")
+
+
+def test_live_feeds_risk_and_advisory(monkeypatch):
+    use(monkeypatch)
+    f = client.post("/api/v1/risk/forecast", json={"farm_id": 1, "mode": "live"}).json()
+    assert f["weather"]["status"] == "live" and f["risk"]["status"] == "ok" and 0 <= f["risk"]["index"] <= 100
+
+
+def test_cache_and_refresh(monkeypatch):
+    use(monkeypatch)
+    client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live"})
+    r2 = client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live"}).json()
+    assert FakeClient.calls == 2 and r2["cached"] is True  # one fetch = 2 HTTP calls
+    r3 = client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live", "refresh": True}).json()
+    assert FakeClient.calls == 4 and r3["cached"] is False
+    client.get("/api/v1/weather", params={"farm_id": 2, "mode": "live"})  # other location is not served from farm 1's cache
+    assert FakeClient.calls == 6
+
+
+def test_missing_fields_stay_none(monkeypatch):
+    cur = {**CUR, "main": {"temp": 27.3}, "wind": None, "weather": []}
+    use(monkeypatch, cur=(200, cur))
+    c = client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live"}).json()["current"]
+    assert c["rh"] is None and c["pressure_hpa"] is None and c["wind_ms"] is None and c["icon"] is None
+
+
+@pytest.mark.parametrize("code,needle", [(401, "2 hours"), (429, "rate limit"), (404, "location"), (500, "HTTP 500")])
+def test_http_errors(monkeypatch, code, needle):
+    use(monkeypatch, cur=(code, {"cod": code, "message": "x"}))
+    r = client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live"}).json()
+    assert r["status"] == "unavailable" and needle in (r["error"] + (r.get("hint") or ""))
+    assert "test-key" not in str(r)  # key never echoed
+
+
+def test_timeout_and_malformed(monkeypatch):
+    use(monkeypatch, exc=httpx.ReadTimeout("slow"))
+    assert "timed out" in client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live"}).json()["error"]
+    use(monkeypatch, cur=(200, {"unexpected": True}))
+    assert "unexpected response" in client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live"}).json()["error"]
+    use(monkeypatch, fc=(200, {"list": "nope"}))
+    assert client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live"}).json()["status"] == "unavailable"
+
+
+def test_failed_live_not_cached_and_demo_still_labelled(monkeypatch):
+    use(monkeypatch, cur=(401, {}))
+    client.get("/api/v1/weather", params={"farm_id": 1, "mode": "live"})
+    assert not weather._cache
+    d = client.get("/api/v1/weather", params={"farm_id": 1, "mode": "conducive"}).json()
+    assert d["status"] == "demo" and d["label"].startswith("Simulated") and d["source"] != "OpenWeatherMap"

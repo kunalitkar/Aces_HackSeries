@@ -68,8 +68,8 @@ export function Factors({ factors }: { factors: Factor[] }) {
   )
 }
 
-export function RiskTrend({ risk, height = 240 }: { risk: Risk; height?: number }) {
-  const data = (risk.trend ?? []).map((t) => ({ ...t, label: fmtTime(t.time) }))
+export function RiskTrend({ risk, height = 240, offset }: { risk: Risk; height?: number; offset?: number }) {
+  const data = (risk.trend ?? []).map((t) => ({ ...t, label: fmtTime(t.time, offset) }))
   return (
     <div style={{ height }} aria-label="Forecast favourability trend chart">
       <ResponsiveContainer width="100%" height="100%">
@@ -87,8 +87,8 @@ export function RiskTrend({ risk, height = 240 }: { risk: Risk; height?: number 
   )
 }
 
-export function WeatherChart({ series, height = 280 }: { series: WeatherPoint[]; height?: number }) {
-  const data = series.map((p) => ({ ...p, label: fmtTime(p.time) }))
+export function WeatherChart({ series, height = 280, offset }: { series: WeatherPoint[]; height?: number; offset?: number }) {
+  const data = series.map((p) => ({ ...p, label: fmtTime(p.time, offset) }))
   return (
     <div style={{ height }} aria-label="Weather forecast chart">
       <ResponsiveContainer width="100%" height="100%">

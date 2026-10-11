@@ -25,6 +25,7 @@ export function useAgri() {
   const [image, setImage] = useState<ImageState>(emptyImage)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
   const reqId = useRef(0)
+  const lastKey = useRef('')
   const imgReq = useRef(0)
 
   useEffect(() => {
@@ -32,12 +33,14 @@ export function useAgri() {
     api.health().then((h) => { setHealth(h); if (h.weather.live_configured) setMode('live') }).catch(() => setHealth(null))
   }, [])
 
-  const load = useCallback(async (record = false) => {
+  const load = useCallback(async (record = false, refresh = false) => {
     if (farmId == null) return
     const id = ++reqId.current
+    const key = `${farmId}|${mode}`
+    if (key !== lastKey.current) { lastKey.current = key; setForecast(null) }  // never show the previous location's weather
     setLoading(true)
     try {
-      const f = await api.forecast(farmId, mode, image.result, record)
+      const f = await api.forecast(farmId, mode, image.result, record, refresh)
       if (id !== reqId.current) return
       setForecast(f); setError(null)
       if (record) setSaveMsg('Assessment saved to history.')
@@ -77,6 +80,7 @@ export function useAgri() {
   }, [image.previewUrl])
 
   const farm = farms.find((f) => f.id === farmId) ?? null
-  return { view, setView, farms, farm, farmId, setFarmId, mode, setMode, health, forecast, loading, error, image, setFile, removeImage, reload: load, saveMsg }
+  const current = forecast && forecast.farm.id === farmId ? forecast : null
+  return { view, setView, farms, farm, farmId, setFarmId, mode, setMode, health, forecast: current, loading, error, image, setFile, removeImage, reload: load, saveMsg }
 }
 export type Agri = ReturnType<typeof useAgri>

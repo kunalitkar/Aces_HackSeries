@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowRight, Download, ImagePlus, Leaf, RefreshCw, Replace, Save, Trash2, Upload } from 'lucide-react'
-import { api, fmtDateTime, fmtTime, type HistoryEntry, type ImageResult } from './api'
+import { ArrowRight, Download, Droplets, Gauge as GaugeIcon, Thermometer, Wind, ImagePlus, Leaf, RefreshCw, Replace, Save, Trash2, Upload } from 'lucide-react'
+import { api, fmtDateTime, fmtTime, tzLabel, type HistoryEntry, type ImageResult, type WeatherPoint } from './api'
 import type { Agri } from './useAgri'
 import { AdvisoryBanner, Card, CurrentStats, DataBadge, Factors, Gauge, Notice, RiskTrend, WeatherChart } from './ui'
 
@@ -11,7 +11,9 @@ function WeatherUnavailable({ a }: { a: Agri }) {
   return (
     <Notice tone="error">
       <p className="font-semibold">Weather data unavailable</p>
-      <p className="mt-1">{w?.error ?? a.forecast?.risk.reason ?? 'The weather service did not respond.'} The image workflow still works. Use the data-source switch above to select a labelled demo scenario.</p>
+      <p className="mt-1">{w?.error ?? a.forecast?.risk.reason ?? 'The weather service did not respond.'}</p>
+      {w?.hint && <p className="mt-1">{w.hint}</p>}
+      <p className="mt-1">Image analysis still works. Use the data-source switch above to choose a clearly labelled demo scenario.</p>
     </Notice>
   )
 }
@@ -51,7 +53,7 @@ export function Overview({ a }: { a: Agri }) {
         <Card title="Current weather" action={<DataBadge weather={f?.weather} />}>
           {f?.weather.current ? (<>
             <CurrentStats p={f.weather.current} />
-            <p className="mt-3 text-xs text-muted">{f.weather.label}{f.weather.fetched_at && ` · updated ${fmtDateTime(f.weather.fetched_at)} IST`}</p>
+            <p className="mt-3 text-xs text-muted">{f.weather.label}{f.weather.fetched_at && ` · updated ${fmtDateTime(f.weather.fetched_at, f.weather.utc_offset_seconds)}`}</p>
           </>) : f ? <WeatherUnavailable a={a} /> : <p className="text-sm text-muted">Loading…</p>}
         </Card>
         <Card title="Environmental favourability">
@@ -70,7 +72,7 @@ export function Overview({ a }: { a: Agri }) {
       </div>
       <div className="grid gap-5 lg:grid-cols-5">
         <Card title="Forecast favourability trend" className="lg:col-span-3" action={<button className="btn btn-ghost" onClick={() => a.setView('weather')}>Weather outlook <ArrowRight size={14} /></button>}>
-          {ok ? <RiskTrend risk={risk!} /> : <p className="text-sm text-muted">No forecast available.</p>}
+          {ok ? <RiskTrend risk={risk!} offset={f?.weather.utc_offset_seconds} /> : <p className="text-sm text-muted">No forecast available.</p>}
         </Card>
         <Card title="Main risk contributors" className="lg:col-span-2">
           {ok ? <Factors factors={risk!.factors!} /> : <p className="text-sm text-muted">No factors — weather data unavailable.</p>}
@@ -153,29 +155,98 @@ export function Monitoring({ a }: { a: Agri }) {
   )
 }
 
+const iconUrl = (icon: string) => `https://openweathermap.org/img/wn/${icon}@2x.png`
+const val = (v: number | null | undefined, unit = '', digits = 1) => (v == null ? 'n/a' : `${Number(v.toFixed(digits))}${unit}`)
+
+function CurrentConditions({ p }: { p: WeatherPoint }) {
+  const stats = [
+    { icon: <Thermometer size={16} />, l: 'Temperature', v: val(p.temp_c, '°C') },
+    { icon: <Thermometer size={16} />, l: 'Feels like', v: val(p.feels_like_c, '°C') },
+    { icon: <Droplets size={16} />, l: 'Humidity', v: val(p.rh, '%', 0) },
+    { icon: <GaugeIcon size={16} />, l: 'Pressure', v: val(p.pressure_hpa, ' hPa', 0) },
+    { icon: <Wind size={16} />, l: 'Wind', v: val(p.wind_ms, ' m/s') },
+    { icon: <Droplets size={16} />, l: 'Rain (last hour)', v: val(p.rain_mm, ' mm') },
+  ]
+  return (
+    <div className="flex flex-wrap items-center gap-5">
+      <div className="flex items-center gap-2">
+        {p.icon && <img src={iconUrl(p.icon)} alt={p.description ?? 'weather icon'} className="h-16 w-16" />}
+        <p className="text-lg font-semibold capitalize">{p.description ?? p.condition ?? 'Conditions n/a'}</p>
+      </div>
+      <dl className="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-3">
+        {stats.map((x) => (
+          <div key={x.l} className="rounded-xl bg-sage-50 p-3">
+            <dt className="flex items-center gap-1 text-xs text-muted">{x.icon}{x.l}</dt>
+            <dd className="text-lg font-semibold tabular-nums">{x.v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  )
+}
+
 export function WeatherOutlook({ a }: { a: Agri }) {
   const f = a.forecast
-  const series = f?.weather.series ?? []
+  const w = f?.weather
+  const off = w?.utc_offset_seconds
+  const series = w?.series ?? []
+  const place = w?.location?.name ? `${w.location.name}${w.location.country ? `, ${w.location.country}` : ''}` : a.farm?.location
+  const coords = w?.location ? `${w.location.lat.toFixed(3)}, ${w.location.lon.toFixed(3)}` : a.farm ? `${a.farm.lat.toFixed(3)}, ${a.farm.lon.toFixed(3)}` : ''
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><h1 className="font-serif text-3xl text-forest">Weather outlook</h1><p className="text-muted">{a.farm?.location} · times in IST</p></div>
-        <div className="flex items-center gap-2"><DataBadge weather={f?.weather} /><button className="btn btn-ghost" onClick={() => a.reload()}><RefreshCw size={15} /> Refresh</button></div>
+        <div>
+          <h1 className="font-serif text-3xl text-forest">Weather outlook</h1>
+          <p className="text-muted">{a.farm?.name} · {place} ({coords}) · local time {tzLabel(off)}</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <DataBadge weather={w} />
+          <button className="btn btn-ghost" onClick={() => a.reload(false, true)} disabled={a.loading} aria-label="Refresh weather">
+            <RefreshCw size={15} className={a.loading ? 'animate-spin' : ''} /> {a.loading ? 'Refreshing…' : 'Refresh'}
+          </button>
+        </div>
       </div>
+      {w && w.status !== 'unavailable' && (
+        <p className="text-xs text-muted">
+          {w.label} · {w.source}
+          {w.observed_at && ` · observed ${fmtDateTime(w.observed_at, off)}`}
+          {w.fetched_at && ` · last updated ${fmtDateTime(w.fetched_at, off)}`}
+          {w.cached && ' (cached up to 5 min; press Refresh to request fresh data)'}
+        </p>
+      )}
       {a.error && <Notice tone="error">{a.error}</Notice>}
-      {f && f.weather.status === 'unavailable' && <WeatherUnavailable a={a} />}
-      {series.length > 0 && (<>
-        <Card title="Temperature, humidity and rainfall"><WeatherChart series={series} />
-          <p className="mt-2 text-xs text-muted">{f!.weather.label} · {series.length} points{f!.weather.status === 'live' ? ' (OpenWeatherMap free tier gives 3-hourly steps)' : ''}</p></Card>
-        {f!.risk.status === 'ok' && <>
-          <Card title="Environmental disease-risk trend (next 12 h window at each time)"><RiskTrend risk={f!.risk} height={260} />
-            <p className="mt-2 text-sm">{f!.risk.explanation}</p><p className="mt-1 text-xs text-muted">{f!.risk.method}</p></Card>
-          <Card title="Why this score"><Factors factors={f!.risk.factors!} /></Card>
+      {!f && a.loading && <Card><p className="text-sm text-muted">Loading weather for {a.farm?.location}…</p></Card>}
+      {!f && !a.loading && !a.error && <Card><p className="text-sm text-muted">No weather data yet.</p></Card>}
+      {f && w!.status === 'unavailable' && <WeatherUnavailable a={a} />}
+      {f && w!.current && (<>
+        <Card title="Current conditions">
+          <CurrentConditions p={w!.current} />
+          {w!.status === 'demo' && <p className="mt-3 text-xs text-amber-warn">Simulated values, not real measurements. Demo scenarios only carry temperature, humidity and rain.</p>}
+        </Card>
+        <Card title={w!.status === 'live' ? '5-day forecast (3-hour steps)' : 'Simulated forecast'}>
+          <WeatherChart series={series} offset={off} />
+          <p className="mt-2 text-xs text-muted">{series.length} time points · rain bars show mm per step.</p>
+        </Card>
+        {f.risk.status === 'ok' && <>
+          <Card title="Environmental disease-risk trend">
+            <RiskTrend risk={f.risk} height={260} offset={off} />
+            <p className="mt-2 text-sm">{f.risk.explanation}</p>
+            <p className="mt-1 text-xs text-muted">{f.risk.method} The risk method is unchanged in this phase; only the weather source is now real.</p>
+          </Card>
+          <Card title="Why this score"><Factors factors={f.risk.factors!} /></Card>
         </>}
         <Card title="Forecast table">
-          <div className="max-h-80 overflow-auto">
-            <table className="w-full text-sm"><thead className="sticky top-0 bg-paper text-left text-muted"><tr><th className="py-1">Time (IST)</th><th>Temp °C</th><th>RH %</th><th>Rain mm</th></tr></thead>
-              <tbody>{series.map((p) => <tr key={p.time} className="border-t border-line tabular-nums"><td className="py-1">{fmtTime(p.time)}</td><td>{p.temp_c ?? '—'}</td><td>{p.rh ?? '—'}</td><td>{p.rain_mm ?? '—'}</td></tr>)}</tbody></table>
+          <div className="max-h-96 overflow-auto">
+            <table className="w-full text-sm">
+              <thead className="sticky top-0 bg-paper text-left text-muted"><tr><th className="py-1">Local time</th><th>Conditions</th><th>Temp °C</th><th>RH %</th><th>Rain mm</th><th>Rain prob.</th><th>Wind m/s</th></tr></thead>
+              <tbody>{series.map((p) => (
+                <tr key={p.time} className="border-t border-line tabular-nums">
+                  <td className="py-1">{fmtTime(p.time, off)}</td>
+                  <td className="capitalize">{p.description ?? '—'}</td><td>{val(p.temp_c)}</td><td>{val(p.rh, '', 0)}</td><td>{val(p.rain_mm)}</td>
+                  <td>{p.pop == null ? '—' : `${Math.round(p.pop * 100)}%`}</td><td>{val(p.wind_ms)}</td>
+                </tr>
+              ))}</tbody>
+            </table>
           </div>
         </Card>
       </>)}

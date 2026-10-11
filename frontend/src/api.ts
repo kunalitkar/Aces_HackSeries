@@ -1,13 +1,30 @@
 export type Mode = 'live' | 'normal' | 'conducive'
 
 export interface Farm { id: number; name: string; location: string; lat: number; lon: number; crop: string }
-export interface WeatherPoint { time: string; temp_c: number | null; rh: number | null; rain_mm: number | null }
+export interface WeatherPoint {
+  time: string
+  temp_c: number | null
+  rh: number | null
+  rain_mm: number | null
+  feels_like_c?: number | null
+  pressure_hpa?: number | null
+  wind_ms?: number | null
+  condition?: string | null
+  description?: string | null
+  icon?: string | null
+  pop?: number | null
+}
 export interface Weather {
   status: 'live' | 'demo' | 'unavailable'
   label: string
   source?: string
   error?: string
+  hint?: string | null
   fetched_at?: string
+  observed_at?: string
+  utc_offset_seconds?: number
+  cached?: boolean
+  location?: { name: string | null; country?: string | null; lat: number; lon: number }
   series?: WeatherPoint[]
   current?: WeatherPoint
 }
@@ -73,11 +90,11 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   health: () => req<Health>('/api/health'),
   farms: () => req<Farm[]>('/api/v1/farms'),
-  forecast: (farm_id: number, mode: Mode, image: ImageResult | null, record = false) =>
+  forecast: (farm_id: number, mode: Mode, image: ImageResult | null, record = false, refresh = false) =>
     req<Forecast>('/api/v1/risk/forecast', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ farm_id, mode, image, record }),
+      body: JSON.stringify({ farm_id, mode, image, record, refresh }),
     }),
   diagnose: (file: File, farm_id: number | null) => {
     const fd = new FormData()
@@ -89,7 +106,11 @@ export const api = {
     req<{ source: string; persistent: boolean; entries: HistoryEntry[] }>(`/api/v1/risk/history${farm_id ? `?farm_id=${farm_id}` : ''}`),
 }
 
-const tz = 'Asia/Kolkata'
-export const fmtTime = (iso: string) => new Date(iso).toLocaleString('en-IN', { timeZone: tz, weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false })
-export const fmtHour = (iso: string) => new Date(iso).toLocaleTimeString('en-IN', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false })
-export const fmtDateTime = (iso: string) => new Date(iso).toLocaleString('en-IN', { timeZone: tz, day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })
+// Format an ISO instant in the location's own clock (offset in seconds from the weather payload; default IST).
+const DEFAULT_OFFSET = 19800
+const shifted = (iso: string, off = DEFAULT_OFFSET) => new Date(new Date(iso).getTime() + off * 1000)
+const base: Intl.DateTimeFormatOptions = { timeZone: 'UTC', hour12: false }
+export const fmtTime = (iso: string, off?: number) => shifted(iso, off).toLocaleString('en-IN', { ...base, weekday: 'short', hour: '2-digit', minute: '2-digit' })
+export const fmtHour = (iso: string, off?: number) => shifted(iso, off).toLocaleTimeString('en-IN', { ...base, hour: '2-digit', minute: '2-digit' })
+export const fmtDateTime = (iso: string, off?: number) => shifted(iso, off).toLocaleString('en-IN', { ...base, day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+export const tzLabel = (off = DEFAULT_OFFSET) => { const m = Math.abs(off) / 60; return `UTC${off < 0 ? '-' : '+'}${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}` }

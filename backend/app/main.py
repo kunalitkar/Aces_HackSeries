@@ -45,9 +45,9 @@ def _weather_payload(w: dict) -> dict:
 
 
 @app.get("/api/v1/weather")
-def get_weather(farm_id: int, mode: Mode = "live") -> dict:
+def get_weather(farm_id: int, mode: Mode = "live", refresh: bool = False) -> dict:
     f = _farm(farm_id)
-    return _weather_payload(weather.get_weather(mode, f["lat"], f["lon"]))
+    return {"farm": f, **_weather_payload(weather.get_weather(mode, f["lat"], f["lon"], refresh))}
 
 
 class ForecastRequest(BaseModel):
@@ -55,12 +55,13 @@ class ForecastRequest(BaseModel):
     mode: Mode = "live"
     image: dict[str, Any] | None = None  # the /diagnose-image response, if the user has one
     record: bool = False  # persist this assessment to history
+    refresh: bool = False  # bypass the short-lived weather cache
 
 
 @app.post("/api/v1/risk/forecast")
 def forecast(req: ForecastRequest) -> dict:
     f = _farm(req.farm_id)
-    w = weather.get_weather(req.mode, f["lat"], f["lon"])
+    w = weather.get_weather(req.mode, f["lat"], f["lon"], req.refresh)
     r = risk.assess(w["series"]) if w["status"] in ("live", "demo") else \
         {"status": "unavailable", "reason": w.get("error", "Weather unavailable")}
     adv = advisory.build(r, req.image)

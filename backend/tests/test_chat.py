@@ -63,6 +63,7 @@ def test_reply_and_grounding_sent_to_groq(monkeypatch):
     assert "NEVER name pesticides" in system and "not a probability of infection" in system.lower() or "NOT the chance of infection" in system
     assert sent["json"]["messages"][-1] == {"role": "user", "content": "Why is my crop at risk?"}
     assert sent["json"]["temperature"] <= 0.3 and sent["json"]["max_tokens"] == chat.MAX_TOKENS
+    assert sent["json"]["model"] == "openai/gpt-oss-120b" and sent["json"]["reasoning_effort"] == "low"
 
 
 def test_no_coordinates_key_or_image_sent_for_current_location(monkeypatch):

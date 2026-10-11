@@ -31,7 +31,7 @@ npm run dev                                            # http://localhost:5173 (
 |---|---|
 | `OPENWEATHER_API_KEY` | Enables live weather and place search. Without it, Live mode shows "unavailable" and the demo scenarios still work. |
 | `DATABASE_URL` | e.g. `mysql+pymysql://agrisentry:<password>@localhost:3306/agrisentry`. The database and tables are created automatically, and columns are only ever added. Empty means in-memory demo storage (lost on restart). |
-| `GROQ_API_KEY`, `GROQ_MODEL` | Optional. Enables the **Ask AgriSentry** chat (Groq). Without the key the page explains how to set it up and everything else works. `GROQ_MODEL` defaults to `llama-3.3-70b-versatile`; set it if Groq retires that model. |
+| `GROQ_API_KEY`, `GROQ_MODEL` | Optional. Enables the **Ask AgriSentry** chat (Groq). Without the key the page explains how to set it up and everything else works. `GROQ_MODEL` defaults to `openai/gpt-oss-120b`; set it if Groq retires that model. |
 | `CORS_ORIGINS` | Comma-separated frontend origins for production (e.g. `https://<app>.vercel.app`). |
 | `AGRISENTRY_MODEL_DIR`, `AGRISENTRY_UPLOAD_DIR` | Optional path overrides. Uploaded photos are stored as files; the database keeps references only. |
 
@@ -72,6 +72,6 @@ The model is near-perfect on PlantVillage lab images but generalises poorly to f
 ## Deployment
 
 - **Frontend → Vercel:** set the project root to `frontend/` (`vercel.json` included) and set `VITE_API_URL`.
-- **Backend → a Docker host** (e.g. Render via `render.yaml`): `docker build -f backend/Dockerfile .`. The model weights (~80 MB) are downloaded and hash-checked at build time. Don't use Vercel serverless for the backend.
+- **Backend → a Docker host** (e.g. Render). `backend/Dockerfile` builds from **either** the repo root or the `backend/` folder (it detects which). Easiest: New → Blueprint on the repo (reads `render.yaml`); or a manual Docker service with Root Directory empty and Dockerfile Path `./backend/Dockerfile`, or Root Directory `backend` and Dockerfile Path `./Dockerfile`. The model files (~80 MB) are downloaded and hash-checked at build time; the server used ~200 MB RAM with the model loaded, so Render's 512 MB free tier should fit. Set `OPENWEATHER_API_KEY`, optionally `GROQ_API_KEY`/`GROQ_MODEL`/`DATABASE_URL`, and `CORS_ORIGINS`. Verify with `/api/health`. Don't use Vercel serverless for the backend.
 - **MySQL:** any managed MySQL 8. Set `DATABASE_URL`.
 - Browser location access requires HTTPS in production (localhost is exempt).

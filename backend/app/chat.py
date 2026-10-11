@@ -17,7 +17,7 @@ from . import catalog, config
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 MAX_MESSAGE_CHARS = 1000
 MAX_TURNS = 8            # most recent messages kept
-MAX_TOKENS = 500
+MAX_TOKENS = 1000   # reasoning models (gpt-oss) spend part of this budget on hidden reasoning
 
 SYSTEM = """You are Ask AgriSentry, a helper inside a crop-disease early-warning app for Indian farmers.
 
@@ -125,6 +125,8 @@ def ask(messages: list[dict], context: str) -> dict:
         return _fail("Please type a question.")
     body = {"model": config.GROQ_MODEL, "temperature": 0.2, "max_tokens": MAX_TOKENS,
             "messages": [{"role": "system", "content": SYSTEM + "\nASSESSMENT:\n" + context}, *history]}
+    if config.GROQ_MODEL.startswith("openai/gpt-oss"):
+        body["reasoning_effort"] = "low"  # short grounded answers do not need long hidden reasoning
     try:
         with httpx.Client(timeout=httpx.Timeout(20.0, connect=5.0)) as c:
             r = c.post(GROQ_URL, json=body, headers={"Authorization": f"Bearer {config.GROQ_API_KEY}"})
@@ -133,7 +135,7 @@ def ask(messages: list[dict], context: str) -> dict:
         if r.status_code == 429:
             return _fail("Groq rate limit reached (HTTP 429).", "Wait a minute and ask again.")
         if r.status_code == 404 or (r.status_code == 400 and "model" in r.text.lower()):
-            return _fail(f"The chat model '{config.GROQ_MODEL}' is not available (HTTP {r.status_code}).", "Set GROQ_MODEL in backend/.env to a model listed in your Groq console.")
+            return _fail(f"The chat model '{config.GROQ_MODEL}' is not available (HTTP {r.status_code}).", "Set GROQ_MODEL in backend/.env to a chat model your key can use (see https://console.groq.com/docs/models), e.g. openai/gpt-oss-120b.")
         if r.status_code >= 400:
             return _fail(f"Groq returned HTTP {r.status_code}.")
         text = (r.json()["choices"][0]["message"]["content"] or "").strip()

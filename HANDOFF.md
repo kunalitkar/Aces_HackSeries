@@ -26,6 +26,7 @@ Backend (PowerShell, from `D:\AgriSentry\backend`):
 ```
 .\.venv\Scripts\python -m uvicorn app.main:app --port 8000
 ```
+Model weights are not in git: run `.\.venv\Scripts\python scripts\download_model.py` once (downloads from Hugging Face and verifies SHA-256).
 Recreate the venv if needed: `py -3.11 -m venv .venv; .\.venv\Scripts\python -m pip install -r requirements.txt`
 Frontend (from `D:\AgriSentry\frontend`): `npm install` then `npm run dev` → http://localhost:5173 (Vite proxies `/api` to 127.0.0.1:8000).
 Tests: `.\.venv\Scripts\python -m pytest -q` (backend), `npm test` and `npm run build` (frontend).

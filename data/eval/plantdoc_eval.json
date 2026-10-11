@@ -1,0 +1,3184 @@
+{
+ "generated_at": "2026-10-11T09:21:55.082486+00:00",
+ "model_version": "efficientnet_v2_s@BiernyVR/crop-disease-classifier (weights sha256 038e6093)",
+ "dataset": "PlantDoc test split (github.com/pratikkayal/PlantDoc-Dataset), images matching a model class",
+ "images_evaluated": 236,
+ "images_rejected": [],
+ "unrestricted_all": {
+  "n": 236,
+  "correct": 48,
+  "incorrect": 188,
+  "accuracy": 0.2034,
+  "macro_recall": 0.1951,
+  "per_class": {
+   "Apple___Apple_scab": {
+    "correct": 1,
+    "n": 10,
+    "recall": 0.1
+   },
+   "Apple___Cedar_apple_rust": {
+    "correct": 0,
+    "n": 10,
+    "recall": 0.0
+   },
+   "Apple___healthy": {
+    "correct": 0,
+    "n": 9,
+    "recall": 0.0
+   },
+   "Blueberry___healthy": {
+    "correct": 5,
+    "n": 11,
+    "recall": 0.455
+   },
+   "Cherry_(including_sour)___healthy": {
+    "correct": 0,
+    "n": 10,
+    "recall": 0.0
+   },
+   "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    "correct": 1,
+    "n": 4,
+    "recall": 0.25
+   },
+   "Corn_(maize)___Common_rust_": {
+    "correct": 8,
+    "n": 10,
+    "recall": 0.8
+   },
+   "Corn_(maize)___Northern_Leaf_Blight": {
+    "correct": 2,
+    "n": 12,
+    "recall": 0.167
+   },
+   "Grape___Black_rot": {
+    "correct": 1,
+    "n": 8,
+    "recall": 0.125
+   },
+   "Grape___healthy": {
+    "correct": 6,
+    "n": 12,
+    "recall": 0.5
+   },
+   "Peach___healthy": {
+    "correct": 0,
+    "n": 9,
+    "recall": 0.0
+   },
+   "Pepper,_bell___Bacterial_spot": {
+    "correct": 1,
+    "n": 9,
+    "recall": 0.111
+   },
+   "Pepper,_bell___healthy": {
+    "correct": 5,
+    "n": 8,
+    "recall": 0.625
+   },
+   "Potato___Early_blight": {
+    "correct": 2,
+    "n": 8,
+    "recall": 0.25
+   },
+   "Potato___Late_blight": {
+    "correct": 0,
+    "n": 8,
+    "recall": 0.0
+   },
+   "Raspberry___healthy": {
+    "correct": 2,
+    "n": 7,
+    "recall": 0.286
+   },
+   "Soybean___healthy": {
+    "correct": 2,
+    "n": 8,
+    "recall": 0.25
+   },
+   "Squash___Powdery_mildew": {
+    "correct": 2,
+    "n": 6,
+    "recall": 0.333
+   },
+   "Strawberry___healthy": {
+    "correct": 0,
+    "n": 8,
+    "recall": 0.0
+   },
+   "Tomato___Bacterial_spot": {
+    "correct": 1,
+    "n": 9,
+    "recall": 0.111
+   },
+   "Tomato___Early_blight": {
+    "correct": 2,
+    "n": 9,
+    "recall": 0.222
+   },
+   "Tomato___Late_blight": {
+    "correct": 5,
+    "n": 10,
+    "recall": 0.5
+   },
+   "Tomato___Leaf_Mold": {
+    "correct": 0,
+    "n": 6,
+    "recall": 0.0
+   },
+   "Tomato___Septoria_leaf_spot": {
+    "correct": 2,
+    "n": 11,
+    "recall": 0.182
+   },
+   "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "correct": 0,
+    "n": 6,
+    "recall": 0.0
+   },
+   "Tomato___Tomato_mosaic_virus": {
+    "correct": 0,
+    "n": 10,
+    "recall": 0.0
+   },
+   "Tomato___healthy": {
+    "correct": 0,
+    "n": 8,
+    "recall": 0.0
+   }
+  },
+  "top_confusions": [
+   {
+    "truth": "Corn_(maize)___Northern_Leaf_Blight",
+    "predicted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+    "count": 8
+   },
+   {
+    "truth": "Pepper,_bell___Bacterial_spot",
+    "predicted": "Pepper,_bell___healthy",
+    "count": 5
+   },
+   {
+    "truth": "Strawberry___healthy",
+    "predicted": "Tomato___Late_blight",
+    "count": 5
+   },
+   {
+    "truth": "Tomato___Bacterial_spot",
+    "predicted": "Pepper,_bell___healthy",
+    "count": 4
+   },
+   {
+    "truth": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 4
+   },
+   {
+    "truth": "Soybean___healthy",
+    "predicted": "Blueberry___healthy",
+    "count": 4
+   },
+   {
+    "truth": "Grape___Black_rot",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 4
+   },
+   {
+    "truth": "Tomato___healthy",
+    "predicted": "Pepper,_bell___healthy",
+    "count": 3
+   },
+   {
+    "truth": "Tomato___Septoria_leaf_spot",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 3
+   },
+   {
+    "truth": "Tomato___Tomato_mosaic_virus",
+    "predicted": "Pepper,_bell___healthy",
+    "count": 3
+   },
+   {
+    "truth": "Tomato___Tomato_mosaic_virus",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 3
+   },
+   {
+    "truth": "Tomato___Leaf_Mold",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 3
+   }
+  ]
+ },
+ "unrestricted_multiclass_crops": {
+  "n": 204,
+  "correct": 37,
+  "incorrect": 167,
+  "accuracy": 0.1814,
+  "macro_recall": 0.1714,
+  "per_class": {
+   "Apple___Apple_scab": {
+    "correct": 1,
+    "n": 10,
+    "recall": 0.1
+   },
+   "Apple___Cedar_apple_rust": {
+    "correct": 0,
+    "n": 10,
+    "recall": 0.0
+   },
+   "Apple___healthy": {
+    "correct": 0,
+    "n": 9,
+    "recall": 0.0
+   },
+   "Cherry_(including_sour)___healthy": {
+    "correct": 0,
+    "n": 10,
+    "recall": 0.0
+   },
+   "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    "correct": 1,
+    "n": 4,
+    "recall": 0.25
+   },
+   "Corn_(maize)___Common_rust_": {
+    "correct": 8,
+    "n": 10,
+    "recall": 0.8
+   },
+   "Corn_(maize)___Northern_Leaf_Blight": {
+    "correct": 2,
+    "n": 12,
+    "recall": 0.167
+   },
+   "Grape___Black_rot": {
+    "correct": 1,
+    "n": 8,
+    "recall": 0.125
+   },
+   "Grape___healthy": {
+    "correct": 6,
+    "n": 12,
+    "recall": 0.5
+   },
+   "Peach___healthy": {
+    "correct": 0,
+    "n": 9,
+    "recall": 0.0
+   },
+   "Pepper,_bell___Bacterial_spot": {
+    "correct": 1,
+    "n": 9,
+    "recall": 0.111
+   },
+   "Pepper,_bell___healthy": {
+    "correct": 5,
+    "n": 8,
+    "recall": 0.625
+   },
+   "Potato___Early_blight": {
+    "correct": 2,
+    "n": 8,
+    "recall": 0.25
+   },
+   "Potato___Late_blight": {
+    "correct": 0,
+    "n": 8,
+    "recall": 0.0
+   },
+   "Strawberry___healthy": {
+    "correct": 0,
+    "n": 8,
+    "recall": 0.0
+   },
+   "Tomato___Bacterial_spot": {
+    "correct": 1,
+    "n": 9,
+    "recall": 0.111
+   },
+   "Tomato___Early_blight": {
+    "correct": 2,
+    "n": 9,
+    "recall": 0.222
+   },
+   "Tomato___Late_blight": {
+    "correct": 5,
+    "n": 10,
+    "recall": 0.5
+   },
+   "Tomato___Leaf_Mold": {
+    "correct": 0,
+    "n": 6,
+    "recall": 0.0
+   },
+   "Tomato___Septoria_leaf_spot": {
+    "correct": 2,
+    "n": 11,
+    "recall": 0.182
+   },
+   "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "correct": 0,
+    "n": 6,
+    "recall": 0.0
+   },
+   "Tomato___Tomato_mosaic_virus": {
+    "correct": 0,
+    "n": 10,
+    "recall": 0.0
+   },
+   "Tomato___healthy": {
+    "correct": 0,
+    "n": 8,
+    "recall": 0.0
+   }
+  },
+  "top_confusions": [
+   {
+    "truth": "Corn_(maize)___Northern_Leaf_Blight",
+    "predicted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+    "count": 8
+   },
+   {
+    "truth": "Pepper,_bell___Bacterial_spot",
+    "predicted": "Pepper,_bell___healthy",
+    "count": 5
+   },
+   {
+    "truth": "Strawberry___healthy",
+    "predicted": "Tomato___Late_blight",
+    "count": 5
+   },
+   {
+    "truth": "Tomato___Bacterial_spot",
+    "predicted": "Pepper,_bell___healthy",
+    "count": 4
+   },
+   {
+    "truth": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 4
+   },
+   {
+    "truth": "Grape___Black_rot",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 4
+   },
+   {
+    "truth": "Tomato___healthy",
+    "predicted": "Pepper,_bell___healthy",
+    "count": 3
+   },
+   {
+    "truth": "Tomato___Septoria_leaf_spot",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 3
+   },
+   {
+    "truth": "Tomato___Tomato_mosaic_virus",
+    "predicted": "Pepper,_bell___healthy",
+    "count": 3
+   },
+   {
+    "truth": "Tomato___Tomato_mosaic_virus",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 3
+   },
+   {
+    "truth": "Tomato___Leaf_Mold",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 3
+   },
+   {
+    "truth": "Apple___Cedar_apple_rust",
+    "predicted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+    "count": 3
+   }
+  ]
+ },
+ "crop_conditioned_multiclass_crops": {
+  "n": 204,
+  "correct": 80,
+  "incorrect": 124,
+  "accuracy": 0.3922,
+  "macro_recall": 0.3723,
+  "per_class": {
+   "Apple___Apple_scab": {
+    "correct": 5,
+    "n": 10,
+    "recall": 0.5
+   },
+   "Apple___Cedar_apple_rust": {
+    "correct": 1,
+    "n": 10,
+    "recall": 0.1
+   },
+   "Apple___healthy": {
+    "correct": 4,
+    "n": 9,
+    "recall": 0.444
+   },
+   "Cherry_(including_sour)___healthy": {
+    "correct": 6,
+    "n": 10,
+    "recall": 0.6
+   },
+   "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    "correct": 1,
+    "n": 4,
+    "recall": 0.25
+   },
+   "Corn_(maize)___Common_rust_": {
+    "correct": 9,
+    "n": 10,
+    "recall": 0.9
+   },
+   "Corn_(maize)___Northern_Leaf_Blight": {
+    "correct": 2,
+    "n": 12,
+    "recall": 0.167
+   },
+   "Grape___Black_rot": {
+    "correct": 2,
+    "n": 8,
+    "recall": 0.25
+   },
+   "Grape___healthy": {
+    "correct": 9,
+    "n": 12,
+    "recall": 0.75
+   },
+   "Peach___healthy": {
+    "correct": 4,
+    "n": 9,
+    "recall": 0.444
+   },
+   "Pepper,_bell___Bacterial_spot": {
+    "correct": 1,
+    "n": 9,
+    "recall": 0.111
+   },
+   "Pepper,_bell___healthy": {
+    "correct": 8,
+    "n": 8,
+    "recall": 1.0
+   },
+   "Potato___Early_blight": {
+    "correct": 6,
+    "n": 8,
+    "recall": 0.75
+   },
+   "Potato___Late_blight": {
+    "correct": 2,
+    "n": 8,
+    "recall": 0.25
+   },
+   "Strawberry___healthy": {
+    "correct": 1,
+    "n": 8,
+    "recall": 0.125
+   },
+   "Tomato___Bacterial_spot": {
+    "correct": 1,
+    "n": 9,
+    "recall": 0.111
+   },
+   "Tomato___Early_blight": {
+    "correct": 5,
+    "n": 9,
+    "recall": 0.556
+   },
+   "Tomato___Late_blight": {
+    "correct": 8,
+    "n": 10,
+    "recall": 0.8
+   },
+   "Tomato___Leaf_Mold": {
+    "correct": 0,
+    "n": 6,
+    "recall": 0.0
+   },
+   "Tomato___Septoria_leaf_spot": {
+    "correct": 5,
+    "n": 11,
+    "recall": 0.455
+   },
+   "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "correct": 0,
+    "n": 6,
+    "recall": 0.0
+   },
+   "Tomato___Tomato_mosaic_virus": {
+    "correct": 0,
+    "n": 10,
+    "recall": 0.0
+   },
+   "Tomato___healthy": {
+    "correct": 0,
+    "n": 8,
+    "recall": 0.0
+   }
+  },
+  "top_confusions": [
+   {
+    "truth": "Corn_(maize)___Northern_Leaf_Blight",
+    "predicted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+    "count": 9
+   },
+   {
+    "truth": "Pepper,_bell___Bacterial_spot",
+    "predicted": "Pepper,_bell___healthy",
+    "count": 8
+   },
+   {
+    "truth": "Strawberry___healthy",
+    "predicted": "Strawberry___Leaf_scorch",
+    "count": 7
+   },
+   {
+    "truth": "Tomato___healthy",
+    "predicted": "Tomato___Early_blight",
+    "count": 6
+   },
+   {
+    "truth": "Apple___Cedar_apple_rust",
+    "predicted": "Apple___Black_rot",
+    "count": 6
+   },
+   {
+    "truth": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "predicted": "Tomato___Early_blight",
+    "count": 5
+   },
+   {
+    "truth": "Peach___healthy",
+    "predicted": "Peach___Bacterial_spot",
+    "count": 5
+   },
+   {
+    "truth": "Potato___Late_blight",
+    "predicted": "Potato___Early_blight",
+    "count": 5
+   },
+   {
+    "truth": "Tomato___Septoria_leaf_spot",
+    "predicted": "Tomato___Early_blight",
+    "count": 4
+   },
+   {
+    "truth": "Tomato___Bacterial_spot",
+    "predicted": "Tomato___Early_blight",
+    "count": 4
+   },
+   {
+    "truth": "Tomato___Tomato_mosaic_virus",
+    "predicted": "Tomato___Late_blight",
+    "count": 4
+   },
+   {
+    "truth": "Cherry_(including_sour)___healthy",
+    "predicted": "Cherry_(including_sour)___Powdery_mildew",
+    "count": 4
+   }
+  ]
+ },
+ "crop_identified_correctly_unrestricted": 0.3644,
+ "rows": [
+  {
+   "file": "late_blight/110822-206-Tomato-blight.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.9072951105528078,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.9766065729428086,
+   "crop_mass": 0.9290282655162307,
+   "single_class_crop": false
+  },
+  {
+   "file": "late_blight/18c.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.9001222418105492,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.9750745029564428,
+   "crop_mass": 0.923131759759242,
+   "single_class_crop": false
+  },
+  {
+   "file": "late_blight/636368370164094909-late-blight-15-.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8256900832294951,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.5478233297642817,
+   "crop_mass": 0.052216036562049636,
+   "single_class_crop": false
+  },
+  {
+   "file": "late_blight/70.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.56117278560427,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.9425064508060454,
+   "crop_mass": 0.5954047159298981,
+   "single_class_crop": false
+  },
+  {
+   "file": "late_blight/dsc_8148cs.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.7913978839542657,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.7216231603501145,
+   "crop_mass": 0.10711983817446813,
+   "single_class_crop": false
+  },
+  {
+   "file": "late_blight/E%29Tomato-late-blight-foliar.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.9086442402705218,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.9765771350078968,
+   "crop_mass": 0.9304377582659401,
+   "single_class_crop": false
+  },
+  {
+   "file": "late_blight/image.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8554559957886307,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.9732802219307237,
+   "crop_mass": 0.8789411071064799,
+   "single_class_crop": false
+  },
+  {
+   "file": "late_blight/IMG_5808.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.90827835704822,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.9803610502188014,
+   "crop_mass": 0.9264733200543885,
+   "single_class_crop": false
+  },
+  {
+   "file": "late_blight/late_blight_tomato_leaf_spore1x1200.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8897367665006377,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.4624909640413919,
+   "crop_mass": 0.04552951500591358,
+   "single_class_crop": false
+  },
+  {
+   "file": "late_blight/LateBlt09_06.jpg",
+   "truth": "Tomato___Late_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.8697557809885537,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.9651039711783939,
+   "crop_mass": 0.9012042297645715,
+   "single_class_crop": false
+  },
+  {
+   "file": "healthy/1684.jpg",
+   "truth": "Tomato___healthy",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Septoria_leaf_spot",
+   "score_unrestricted": 0.6379148036150862,
+   "pred_conditioned": "Tomato___Septoria_leaf_spot",
+   "score_conditioned": 0.8571681314910895,
+   "crop_mass": 0.744211993165681,
+   "single_class_crop": false
+  },
+  {
+   "file": "healthy/2013-08-20-06.jpg",
+   "truth": "Tomato___healthy",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8570477701974856,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.5122677476827989,
+   "crop_mass": 0.058709546637499554,
+   "single_class_crop": false
+  },
+  {
+   "file": "healthy/90e2c0.jpg",
+   "truth": "Tomato___healthy",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.7585432504284711,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.9207762528072063,
+   "crop_mass": 0.8238084421876334,
+   "single_class_crop": false
+  },
+  {
+   "file": "healthy/DSCN1015.JPG.jpg",
+   "truth": "Tomato___healthy",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.5419721716016992,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.7773112457457098,
+   "crop_mass": 0.6972395865465202,
+   "single_class_crop": false
+  },
+  {
+   "file": "healthy/IMG_1246.jpg",
+   "truth": "Tomato___healthy",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8455402040035092,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.1168484070126677,
+   "crop_mass": 0.029848438344233126,
+   "single_class_crop": false
+  },
+  {
+   "file": "healthy/main-qimg-d9c2a93f60568485c989670d9bbf703b.jpg",
+   "truth": "Tomato___healthy",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Septoria_leaf_spot",
+   "score_unrestricted": 0.47400233753600857,
+   "pred_conditioned": "Tomato___Septoria_leaf_spot",
+   "score_conditioned": 0.6947337795880056,
+   "crop_mass": 0.6822790995093166,
+   "single_class_crop": false
+  },
+  {
+   "file": "healthy/Tomato59.JPG.jpg",
+   "truth": "Tomato___healthy",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.478608060489246,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.3183336259501291,
+   "crop_mass": 0.05160815393336257,
+   "single_class_crop": false
+  },
+  {
+   "file": "healthy/Tomato_leaf.jpg",
+   "truth": "Tomato___healthy",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.7616412474871005,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.32538373009262134,
+   "crop_mass": 0.03880482876063895,
+   "single_class_crop": false
+  },
+  {
+   "file": "early_blight/039b47d574bc4bb8a14259a1cd96a741.jpg",
+   "truth": "Tomato___Early_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.6365672935140436,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.44034404925882215,
+   "crop_mass": 0.11381537460746718,
+   "single_class_crop": false
+  },
+  {
+   "file": "early_blight/100983448.jpg",
+   "truth": "Tomato___Early_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.8899091393383266,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.9699076304583026,
+   "crop_mass": 0.9175194744244098,
+   "single_class_crop": false
+  },
+  {
+   "file": "early_blight/1234080-Early-Blight.jpg",
+   "truth": "Tomato___Early_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.6309548643523895,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.6827628272062276,
+   "crop_mass": 0.9241201178660688,
+   "single_class_crop": false
+  },
+  {
+   "file": "early_blight/bugs-and-blight-061.jpg",
+   "truth": "Tomato___Early_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Cherry_(including_sour)___healthy",
+   "score_unrestricted": 0.827628275124254,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.5119189782002196,
+   "crop_mass": 0.06694916916718702,
+   "single_class_crop": false
+  },
+  {
+   "file": "early_blight/dscn3175.jpg",
+   "truth": "Tomato___Early_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.7660912046400804,
+   "pred_conditioned": "Tomato___Septoria_leaf_spot",
+   "score_conditioned": 0.1717643909983703,
+   "crop_mass": 0.022738730448655053,
+   "single_class_crop": false
+  },
+  {
+   "file": "early_blight/early_blight1-150x150.jpg",
+   "truth": "Tomato___Early_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.9060184207152775,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.9761141203881285,
+   "crop_mass": 0.9281890321953553,
+   "single_class_crop": false
+  },
+  {
+   "file": "early_blight/earlyblight21_.jpg",
+   "truth": "Tomato___Early_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.9095094603812693,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.32463796449186305,
+   "crop_mass": 0.017733754570204895,
+   "single_class_crop": false
+  },
+  {
+   "file": "early_blight/Shoemaker_7068.JPG.jpg",
+   "truth": "Tomato___Early_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.2720779566042505,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.6854418377625806,
+   "crop_mass": 0.3969380647851427,
+   "single_class_crop": false
+  },
+  {
+   "file": "early_blight/tomato_early-blight_01_zoom.jpg",
+   "truth": "Tomato___Early_blight",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.437306120587437,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.8449116948060208,
+   "crop_mass": 0.2177224422442949,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/0.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___Bacterial_spot",
+   "score_unrestricted": 0.8328723578727592,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.3677738352106689,
+   "crop_mass": 0.055851046513823596,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/2septoria-tomato.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.9045671561972025,
+   "pred_conditioned": "Tomato___Spider_mites Two-spotted_spider_mite",
+   "score_conditioned": 0.11665522825488285,
+   "crop_mass": 0.02504179111748613,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/2STEM.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Septoria_leaf_spot",
+   "score_unrestricted": 0.8931732749179934,
+   "pred_conditioned": "Tomato___Septoria_leaf_spot",
+   "score_conditioned": 0.9689308138995851,
+   "crop_mass": 0.9218132627275049,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/55830b60a7cf2.image.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.823958512068974,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.9803562061503727,
+   "crop_mass": 0.8404685020605567,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/6134794031202304.jpeg.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.3519981279197813,
+   "pred_conditioned": "Tomato___Septoria_leaf_spot",
+   "score_conditioned": 0.6616291629584067,
+   "crop_mass": 0.24158873343289552,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/636227737977191231-septoria-leaf-spot-VT.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.5141343022757308,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.37384941986084186,
+   "crop_mass": 0.029957137633551206,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/6447731_orig.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Squash___Powdery_mildew",
+   "score_unrestricted": 0.33299173018468176,
+   "pred_conditioned": "Tomato___Septoria_leaf_spot",
+   "score_conditioned": 0.8386000245204722,
+   "crop_mass": 0.33555287760261426,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/7-17-Photo3_Septoria-MARY.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Septoria_leaf_spot",
+   "score_unrestricted": 0.8290874823313911,
+   "pred_conditioned": "Tomato___Septoria_leaf_spot",
+   "score_conditioned": 0.9370342243012986,
+   "crop_mass": 0.8847995738358455,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/early-blight-septoria-ls-fig-3.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.4583426284617511,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.3681531545996529,
+   "crop_mass": 0.06623384072082174,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/RARZ4.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.818949092707781,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.2102982650186818,
+   "crop_mass": 0.04271560824098988,
+   "single_class_crop": false
+  },
+  {
+   "file": "septoria_leaf_spot/sept4disease-019.jpg",
+   "truth": "Tomato___Septoria_leaf_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.5471129006870435,
+   "pred_conditioned": "Tomato___Septoria_leaf_spot",
+   "score_conditioned": 0.6261505796390509,
+   "crop_mass": 0.18297515958354557,
+   "single_class_crop": false
+  },
+  {
+   "file": "bacterial_spot/%2320+Bacterial+Spot+and+Speck.jpg",
+   "truth": "Tomato___Bacterial_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8752101055945714,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.16218099327603894,
+   "crop_mass": 0.032952423911907,
+   "single_class_crop": false
+  },
+  {
+   "file": "bacterial_spot/07.17.18-Common_Tomato_Diseases_Canker-258x300.jpg",
+   "truth": "Tomato___Bacterial_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.46394920797217337,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.6806051467452651,
+   "crop_mass": 0.08524412430648004,
+   "single_class_crop": false
+  },
+  {
+   "file": "bacterial_spot/bact-spot-fig-1.jpg",
+   "truth": "Tomato___Bacterial_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.760763258486356,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.16810263765480626,
+   "crop_mass": 0.021004536023628086,
+   "single_class_crop": false
+  },
+  {
+   "file": "bacterial_spot/Bacterial_spots563.jpg",
+   "truth": "Tomato___Bacterial_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.797126799156256,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.382523698740507,
+   "crop_mass": 0.03184903292013124,
+   "single_class_crop": false
+  },
+  {
+   "file": "bacterial_spot/Tom_Bact3.jpg",
+   "truth": "Tomato___Bacterial_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Bacterial_spot",
+   "score_unrestricted": 0.31240156772611816,
+   "pred_conditioned": "Tomato___Bacterial_spot",
+   "score_conditioned": 0.7349203124211885,
+   "crop_mass": 0.42508223333345346,
+   "single_class_crop": false
+  },
+  {
+   "file": "bacterial_spot/Tom_Bact7.jpg",
+   "truth": "Tomato___Bacterial_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Leaf_Mold",
+   "score_unrestricted": 0.8666885714082608,
+   "pred_conditioned": "Tomato___Leaf_Mold",
+   "score_conditioned": 0.9626223071468982,
+   "crop_mass": 0.9003412501181549,
+   "single_class_crop": false
+  },
+  {
+   "file": "bacterial_spot/Tomato%2BBacterial%2BSpot%2Bon%2BLeaves.jpg",
+   "truth": "Tomato___Bacterial_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.7692464547632453,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.18930741659319045,
+   "crop_mass": 0.033570301650852535,
+   "single_class_crop": false
+  },
+  {
+   "file": "bacterial_spot/tomato_bacterial-speck_01_zoom.jpg",
+   "truth": "Tomato___Bacterial_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.38241903157031276,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.4880147343162195,
+   "crop_mass": 0.10550229225944616,
+   "single_class_crop": false
+  },
+  {
+   "file": "bacterial_spot/tomato_V8.jpg",
+   "truth": "Tomato___Bacterial_spot",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.6378583801773143,
+   "pred_conditioned": "Tomato___Septoria_leaf_spot",
+   "score_conditioned": 0.8375404895527465,
+   "crop_mass": 0.2581517554357807,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/9511.img.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.9026604667253991,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.29172433696016814,
+   "crop_mass": 0.034728193187723536,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/D%29AlfMov.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.8734684397665357,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.9674071914015406,
+   "crop_mass": 0.9028963682822015,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/everystockphoto-21099455-l.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.5807053267598725,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.2231659231636453,
+   "crop_mass": 0.049293658765938844,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/ill-tomato-of-tomato-mosaic-virus-DBE17N.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8037157769278803,
+   "pred_conditioned": "Tomato___Leaf_Mold",
+   "score_conditioned": 0.1353457974386473,
+   "crop_mass": 0.026130661323065203,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/page_2.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.40365595969722445,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.6299066759363597,
+   "crop_mass": 0.1708681164211843,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/tmv-tomato-34.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8736012480757676,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.25784204282467355,
+   "crop_mass": 0.029769653747942843,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/tmv-tomato-9.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Squash___Powdery_mildew",
+   "score_unrestricted": 0.3076429644066329,
+   "pred_conditioned": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "score_conditioned": 0.5989927479620216,
+   "crop_mass": 0.20649010016096322,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/toma_TMV.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Leaf_Mold",
+   "score_unrestricted": 0.40874433645806757,
+   "pred_conditioned": "Tomato___Leaf_Mold",
+   "score_conditioned": 0.6586274696845357,
+   "crop_mass": 0.6206001955154479,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/Tomato-Mosaic-1wdr2jx-300x225.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Corn_(maize)___healthy",
+   "score_unrestricted": 0.6830096683926445,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.7678919758845157,
+   "crop_mass": 0.15975024764548648,
+   "single_class_crop": false
+  },
+  {
+   "file": "mosaic_virus/tomato_virus_04_zoom.jpg",
+   "truth": "Tomato___Tomato_mosaic_virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.9166990202555187,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.1577137280689407,
+   "crop_mass": 0.022133999663185282,
+   "single_class_crop": false
+  },
+  {
+   "file": "yellow_leaf_curl_virus/11-40580_5.jpg",
+   "truth": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Cherry_(including_sour)___healthy",
+   "score_unrestricted": 0.8819871474997997,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.1949975567922891,
+   "crop_mass": 0.020111806857302156,
+   "single_class_crop": false
+  },
+  {
+   "file": "yellow_leaf_curl_virus/17fc47.jpg",
+   "truth": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.9002845422005847,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.14894336346282103,
+   "crop_mass": 0.02648291728859762,
+   "single_class_crop": false
+  },
+  {
+   "file": "yellow_leaf_curl_virus/8226402877_9abf151b5b_b.jpg",
+   "truth": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.29305301091614105,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.18470991664352512,
+   "crop_mass": 0.028620964862019118,
+   "single_class_crop": false
+  },
+  {
+   "file": "yellow_leaf_curl_virus/fwa2013313115151.jpg",
+   "truth": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8477969285049585,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.16585757048810781,
+   "crop_mass": 0.015403339430089645,
+   "single_class_crop": false
+  },
+  {
+   "file": "yellow_leaf_curl_virus/glyphosate.jpg",
+   "truth": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.874147595750871,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.1801749100877974,
+   "crop_mass": 0.028429831585442933,
+   "single_class_crop": false
+  },
+  {
+   "file": "yellow_leaf_curl_virus/tylcv-seminar-1-638.jpg",
+   "truth": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.9080720441279009,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.9834972465030354,
+   "crop_mass": 0.9233091880599366,
+   "single_class_crop": false
+  },
+  {
+   "file": "leaf_mold/49%20Leafmold%20Bottom.jpg",
+   "truth": "Tomato___Leaf_Mold",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.7263294240399688,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.4935821989643649,
+   "crop_mass": 0.10565196000032777,
+   "single_class_crop": false
+  },
+  {
+   "file": "leaf_mold/50%20Leafmold%20Top.jpg",
+   "truth": "Tomato___Leaf_Mold",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "score_unrestricted": 0.7714346194067498,
+   "pred_conditioned": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "score_conditioned": 0.9196297833448139,
+   "crop_mass": 0.8388534531808454,
+   "single_class_crop": false
+  },
+  {
+   "file": "leaf_mold/BIGSD.jpg",
+   "truth": "Tomato___Leaf_Mold",
+   "crop": "Tomato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.8161316364673163,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.9632989320323139,
+   "crop_mass": 0.8472257253991632,
+   "single_class_crop": false
+  },
+  {
+   "file": "leaf_mold/black_leaf_mold_in_zina_tina.jpg",
+   "truth": "Tomato___Leaf_Mold",
+   "crop": "Tomato",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.32250224915270076,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.7956537155165951,
+   "crop_mass": 0.24837617874456228,
+   "single_class_crop": false
+  },
+  {
+   "file": "leaf_mold/dscn6689.jpg",
+   "truth": "Tomato___Leaf_Mold",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8695497195540371,
+   "pred_conditioned": "Tomato___Late_blight",
+   "score_conditioned": 0.2707656130980062,
+   "crop_mass": 0.038433149079367374,
+   "single_class_crop": false
+  },
+  {
+   "file": "leaf_mold/fungus-univ-of-minnesoeta.jpg",
+   "truth": "Tomato___Leaf_Mold",
+   "crop": "Tomato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8757272586731055,
+   "pred_conditioned": "Tomato___Early_blight",
+   "score_conditioned": 0.11954948991755601,
+   "crop_mass": 0.02586220476109717,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/052609%20Hartman%20Crabapple%20scab%20single%20leaf.JPG.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.8339990354248281,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.28083575362000573,
+   "crop_mass": 0.01266233955029894,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/1b321015-6e33-4f18-aade-888f4383fe92.jpeg.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Peach___Bacterial_spot",
+   "score_unrestricted": 0.8519821015235778,
+   "pred_conditioned": "Apple___Black_rot",
+   "score_conditioned": 0.27198960406843714,
+   "crop_mass": 0.013285517779541792,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/28-500x375.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8753777854673244,
+   "pred_conditioned": "Apple___Cedar_apple_rust",
+   "score_conditioned": 0.32340140280556656,
+   "crop_mass": 0.013221677169500953,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/816.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Apple___Cedar_apple_rust",
+   "score_unrestricted": 0.8537895937009945,
+   "pred_conditioned": "Apple___Cedar_apple_rust",
+   "score_conditioned": 0.9886071162284454,
+   "crop_mass": 0.8636288164283277,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/apple%20scab%20leaf.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.6851097995776377,
+   "pred_conditioned": "Apple___Cedar_apple_rust",
+   "score_conditioned": 0.5045837902436909,
+   "crop_mass": 0.012340801399750903,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/apple%20scabnew.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Pepper,_bell___Bacterial_spot",
+   "score_unrestricted": 0.8765407776994362,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.6940311461346511,
+   "crop_mass": 0.02317859056558611,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/apple-scab-5366820.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8641312600930744,
+   "pred_conditioned": "Apple___healthy",
+   "score_conditioned": 0.26782942605201393,
+   "crop_mass": 0.012863431733853238,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/apples_apple-scab_01_zoom.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Apple___Apple_scab",
+   "score_unrestricted": 0.8572685299257043,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.981793800356872,
+   "crop_mass": 0.8731655563664142,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/apples_apple-scab_02_thm.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Potato___Early_blight",
+   "score_unrestricted": 0.865832439211606,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.3252007011571857,
+   "crop_mass": 0.012080698899440627,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_scab/apples_apple-scab_10_zoom.jpg",
+   "truth": "Apple___Apple_scab",
+   "crop": "Apple",
+   "pred_unrestricted": "Squash___Powdery_mildew",
+   "score_unrestricted": 0.7412779914229588,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.33797535488596003,
+   "crop_mass": 0.016513093856238815,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_healthy/20180511_090912-14gtw8a-e1526047952754.jpg",
+   "truth": "Apple___healthy",
+   "crop": "Apple",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.5276176554777247,
+   "pred_conditioned": "Apple___Black_rot",
+   "score_conditioned": 0.3217199277806906,
+   "crop_mass": 0.020631767030001417,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_healthy/20180511_091133-24l1vhg-e1526047988236.jpg",
+   "truth": "Apple___healthy",
+   "crop": "Apple",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8508159639770557,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.25870399004091327,
+   "crop_mass": 0.014254889544532379,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_healthy/20180511_091252-1gy5xf5-e1526048000596.jpg",
+   "truth": "Apple___healthy",
+   "crop": "Apple",
+   "pred_unrestricted": "Cherry_(including_sour)___Powdery_mildew",
+   "score_unrestricted": 0.8756742727011049,
+   "pred_conditioned": "Apple___healthy",
+   "score_conditioned": 0.5284919226705671,
+   "crop_mass": 0.03354725434163446,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_healthy/4120978-single-green-leaf-of-apple-tree.jpg",
+   "truth": "Apple___healthy",
+   "crop": "Apple",
+   "pred_unrestricted": "Strawberry___healthy",
+   "score_unrestricted": 0.5168576874319849,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.3487897091179466,
+   "crop_mass": 0.03789269132193891,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_healthy/apple-leaf-14319997.jpg",
+   "truth": "Apple___healthy",
+   "crop": "Apple",
+   "pred_unrestricted": "Soybean___healthy",
+   "score_unrestricted": 0.6661954856270501,
+   "pred_conditioned": "Apple___healthy",
+   "score_conditioned": 0.6886248913358963,
+   "crop_mass": 0.06454320655079944,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_healthy/apple-leaf-9834637.jpg",
+   "truth": "Apple___healthy",
+   "crop": "Apple",
+   "pred_unrestricted": "Tomato___Septoria_leaf_spot",
+   "score_unrestricted": 0.8801382072099442,
+   "pred_conditioned": "Apple___healthy",
+   "score_conditioned": 0.4723158375317605,
+   "crop_mass": 0.020051539621925477,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_healthy/apple-leaf-closeup-37636177.jpg",
+   "truth": "Apple___healthy",
+   "crop": "Apple",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.4716630897039715,
+   "pred_conditioned": "Apple___healthy",
+   "score_conditioned": 0.7850581851386925,
+   "crop_mass": 0.14082473212965452,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_healthy/apple-leaf-isolated-white-background-56631026.jpg",
+   "truth": "Apple___healthy",
+   "crop": "Apple",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.5642230695238782,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.42201688673096033,
+   "crop_mass": 0.042776621575744564,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_healthy/Apple-Leaf-Wallpaper-17.jpg",
+   "truth": "Apple___healthy",
+   "crop": "Apple",
+   "pred_unrestricted": "Corn_(maize)___healthy",
+   "score_unrestricted": 0.8653731780848608,
+   "pred_conditioned": "Apple___Cedar_apple_rust",
+   "score_conditioned": 0.2855798060141043,
+   "crop_mass": 0.011188405148705272,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/02.-Rust-2017-207u24s.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.7146264300285462,
+   "pred_conditioned": "Apple___healthy",
+   "score_conditioned": 0.2884051749422287,
+   "crop_mass": 0.011722384866642876,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/0605_Rust-induced_leafspot.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Grape___Esca_(Black_Measles)",
+   "score_unrestricted": 0.8590090562633739,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.3336494158215355,
+   "crop_mass": 0.01488400354807736,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/185161-004-EAF28842.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Apple___Black_rot",
+   "score_unrestricted": 0.7899684527052732,
+   "pred_conditioned": "Apple___Black_rot",
+   "score_conditioned": 0.9837994516215253,
+   "crop_mass": 0.8029771224239102,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/2011-011.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.8092768185447441,
+   "pred_conditioned": "Apple___Black_rot",
+   "score_conditioned": 0.560148190898367,
+   "crop_mass": 0.017901451942336825,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/20130519cedarapplerust.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.9074813984281744,
+   "pred_conditioned": "Apple___Cedar_apple_rust",
+   "score_conditioned": 0.34083194946215045,
+   "crop_mass": 0.01177742171472751,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/20130610_110514.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.3470840695107232,
+   "pred_conditioned": "Apple___Apple_scab",
+   "score_conditioned": 0.719179513637933,
+   "crop_mass": 0.07012227843295035,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/20130802_111632.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.794913869631717,
+   "pred_conditioned": "Apple___Black_rot",
+   "score_conditioned": 0.51247992271021,
+   "crop_mass": 0.03604660853346089,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/4-apple-rust2_19011_matt-bertone.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.7345415379726499,
+   "pred_conditioned": "Apple___Black_rot",
+   "score_conditioned": 0.5437393805428176,
+   "crop_mass": 0.09020946807533531,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/9343310-small.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.6979476025330178,
+   "pred_conditioned": "Apple___Black_rot",
+   "score_conditioned": 0.40097435445683205,
+   "crop_mass": 0.014886447929479667,
+   "single_class_crop": false
+  },
+  {
+   "file": "apple_rust/99e886623c2080c22f6519b0e708c531.jpg",
+   "truth": "Apple___Cedar_apple_rust",
+   "crop": "Apple",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8389543560066723,
+   "pred_conditioned": "Apple___Black_rot",
+   "score_conditioned": 0.32491912492642927,
+   "crop_mass": 0.014743752754257957,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_bacterial_spot/00.jpg",
+   "truth": "Pepper,_bell___Bacterial_spot",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8994221003391643,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.6768642801834732,
+   "crop_mass": 0.007562638521127291,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_bacterial_spot/000.jpg",
+   "truth": "Pepper,_bell___Bacterial_spot",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.7238969368599075,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.7522541490704877,
+   "crop_mass": 0.02111323602899987,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_bacterial_spot/01.jpg",
+   "truth": "Pepper,_bell___Bacterial_spot",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.8847219347106985,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.8769640399648447,
+   "crop_mass": 0.011393967208932746,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_bacterial_spot/Bacterial-spot-pepper2.jpg",
+   "truth": "Pepper,_bell___Bacterial_spot",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___Bacterial_spot",
+   "score_unrestricted": 0.4031260231463156,
+   "pred_conditioned": "Pepper,_bell___Bacterial_spot",
+   "score_conditioned": 0.7156571740413343,
+   "crop_mass": 0.5632948816398398,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_bacterial_spot/bacterial_leaf_spot_pepper_l.jpg",
+   "truth": "Pepper,_bell___Bacterial_spot",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.9262713476704637,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.9958284969777625,
+   "crop_mass": 0.930151477369449,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_bacterial_spot/CMVpepperLeafShock-copy-50QUALITY-1ge8umw.jpg",
+   "truth": "Pepper,_bell___Bacterial_spot",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.5284663857044172,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.9944675218325969,
+   "crop_mass": 0.5314063798992283,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_bacterial_spot/H5w92.jpg",
+   "truth": "Pepper,_bell___Bacterial_spot",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8375096561911267,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.9942927369768022,
+   "crop_mass": 0.842316980749168,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_bacterial_spot/pepper-spot.jpg",
+   "truth": "Pepper,_bell___Bacterial_spot",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.860601751115539,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.9940009873575059,
+   "crop_mass": 0.8657956702874099,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_bacterial_spot/pepper_bacterial-spot_03_zoom.jpg",
+   "truth": "Pepper,_bell___Bacterial_spot",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8373872208985818,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.9557413433685356,
+   "crop_mass": 0.8761651117311599,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_healthy/10148582-green-leaf-of-pepper.jpg",
+   "truth": "Pepper,_bell___healthy",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.9019017216823071,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.99822506125457,
+   "crop_mass": 0.9035053884028882,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_healthy/4825902504_5fa80b65b8_z.jpg",
+   "truth": "Pepper,_bell___healthy",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Orange___Haunglongbing_(Citrus_greening)",
+   "score_unrestricted": 0.8586144393870906,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.7911212396800197,
+   "crop_mass": 0.010499043364925135,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_healthy/e33155.jpg",
+   "truth": "Pepper,_bell___healthy",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.5443031830688703,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.6339284145550796,
+   "crop_mass": 0.04822893719616819,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_healthy/GREEN%20BELL%20PLANT%20YELLOW%20LEAF.JPG.jpg",
+   "truth": "Pepper,_bell___healthy",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.598218473959384,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.9885272239416975,
+   "crop_mass": 0.6051613546605434,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_healthy/IMG_1629.JPG_1507122477.jpg",
+   "truth": "Pepper,_bell___healthy",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8766700263096049,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.8018048516594417,
+   "crop_mass": 0.021229908300368857,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_healthy/pepper_leaf.jpg",
+   "truth": "Pepper,_bell___healthy",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8738741280137872,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.9978965668720081,
+   "crop_mass": 0.8757161383499095,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_healthy/RnGnC.jpg",
+   "truth": "Pepper,_bell___healthy",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.9069637473075761,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.9988146569182476,
+   "crop_mass": 0.9080400863418754,
+   "single_class_crop": false
+  },
+  {
+   "file": "pepper_healthy/why-are-my-pepper-plants-yellow-yellow-pepper-plants-yellow-leaves-green-veins-pepper-plants-yellow-veins.jpg",
+   "truth": "Pepper,_bell___healthy",
+   "crop": "Bell pepper",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8997387603773609,
+   "pred_conditioned": "Pepper,_bell___healthy",
+   "score_conditioned": 0.9981569264386234,
+   "crop_mass": 0.9014001070829475,
+   "single_class_crop": false
+  },
+  {
+   "file": "blueberry_healthy/blueberry-leaves-normal-above-and-iron-deficient-below-bgahf8.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.4795107599942814,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.008003379677450718,
+   "crop_mass": 0.008003379677450718,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/blueberrysilverleaf16-1372b.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Soybean___healthy",
+   "score_unrestricted": 0.4641078753384266,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.030205188743695825,
+   "crop_mass": 0.030205188743695825,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/leaf-blueberry-15281271.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.33596958988747366,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.33596958988747366,
+   "crop_mass": 0.33596958988747366,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/northern-highbush-blueberry-blue-huckleberry-vaccinium-corymbosum-EHNXRR.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Soybean___healthy",
+   "score_unrestricted": 0.8031392343967818,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.003700608225642233,
+   "crop_mass": 0.003700608225642233,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/P1200665+Vaccinium+alaskaense+vs+ovalifolium+leaf+and++twig+cr.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.7810173924859992,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.7810173924859992,
+   "crop_mass": 0.7810173924859992,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/P1200701+Vaccinium+ovalifolium+Oval-leaf+Blueberry+leaf+margin+Heather+Meadows+cr.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.6138039639797039,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.007696857751097275,
+   "crop_mass": 0.007696857751097275,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/stock-photo-blueberry-leaf-closeup-isolated-on-white-306486470.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.8417393893451098,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.8417393893451098,
+   "crop_mass": 0.8417393893451098,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/stock-photo-green-blueberry-leaf-isolated-with-clipping-path-550344304.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.8831094578641315,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.8831094578641315,
+   "crop_mass": 0.8831094578641315,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/stock-photo-two-sides-of-blueberry-leaf-isolated-on-white-15582232.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.8860633998605021,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.8860633998605021,
+   "crop_mass": 0.8860633998605021,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/vaccinium-angustifolium-low-bush-blueberry_0830_124221.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.6386478525534157,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.0032567332528145553,
+   "crop_mass": 0.0032567332528145553,
+   "single_class_crop": true
+  },
+  {
+   "file": "blueberry_healthy/vaccinium_angustifolium_leaf2.JPG.jpg",
+   "truth": "Blueberry___healthy",
+   "crop": "Blueberry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8931808536916438,
+   "pred_conditioned": "Blueberry___healthy",
+   "score_conditioned": 0.0023027168041803068,
+   "crop_mass": 0.0023027168041803068,
+   "single_class_crop": true
+  },
+  {
+   "file": "cherry_healthy/d7b79dbc0bca0eb3e63fbe5dfb256ccd53d90a4eb1413_1260x1260.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.7736341019998295,
+   "pred_conditioned": "Cherry_(including_sour)___healthy",
+   "score_conditioned": 0.8664084687029292,
+   "crop_mass": 0.023161441308332437,
+   "single_class_crop": false
+  },
+  {
+   "file": "cherry_healthy/e52bbb9a08ede2948ba0c006f02fe7b053ad7831d1df6_1260x1260.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.5687548936179155,
+   "pred_conditioned": "Cherry_(including_sour)___healthy",
+   "score_conditioned": 0.6172556202825725,
+   "crop_mass": 0.022104343747402846,
+   "single_class_crop": false
+  },
+  {
+   "file": "cherry_healthy/ed12ff77ce021883de241830dee55e2e53d2c93231699_1260x1260.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Apple___healthy",
+   "score_unrestricted": 0.8921322636718111,
+   "pred_conditioned": "Cherry_(including_sour)___healthy",
+   "score_conditioned": 0.5364163808279914,
+   "crop_mass": 0.006142017099461774,
+   "single_class_crop": false
+  },
+  {
+   "file": "cherry_healthy/fc729af279e9087d00bd32d89a1552a756a3ad9de7f2b_1260x1260.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Apple___healthy",
+   "score_unrestricted": 0.8886475837964103,
+   "pred_conditioned": "Cherry_(including_sour)___healthy",
+   "score_conditioned": 0.5614522801628141,
+   "crop_mass": 0.006152834253051279,
+   "single_class_crop": false
+  },
+  {
+   "file": "cherry_healthy/five-cherry-tree-green-leaves-white-isolated-background-34493587.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8575363918160281,
+   "pred_conditioned": "Cherry_(including_sour)___healthy",
+   "score_conditioned": 0.50837569186054,
+   "crop_mass": 0.005651999200066687,
+   "single_class_crop": false
+  },
+  {
+   "file": "cherry_healthy/prunsero_leaf1.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.6770104032522044,
+   "pred_conditioned": "Cherry_(including_sour)___Powdery_mildew",
+   "score_conditioned": 0.5384243835394439,
+   "crop_mass": 0.0075656283732321505,
+   "single_class_crop": false
+  },
+  {
+   "file": "cherry_healthy/prunsero_leaf2.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.8745166354510342,
+   "pred_conditioned": "Cherry_(including_sour)___healthy",
+   "score_conditioned": 0.664142057053386,
+   "crop_mass": 0.00599687652195056,
+   "single_class_crop": false
+  },
+  {
+   "file": "cherry_healthy/prunus-virginiana-le-gmittelhauser.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Corn_(maize)___healthy",
+   "score_unrestricted": 0.17317792411159444,
+   "pred_conditioned": "Cherry_(including_sour)___Powdery_mildew",
+   "score_conditioned": 0.8661143491526523,
+   "crop_mass": 0.09299278547804374,
+   "single_class_crop": false
+  },
+  {
+   "file": "cherry_healthy/red-cherry-tree-leaf-isolated-crisp-white-background-35742030.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8377729065359371,
+   "pred_conditioned": "Cherry_(including_sour)___Powdery_mildew",
+   "score_conditioned": 0.5840616807567345,
+   "crop_mass": 0.007900694238322516,
+   "single_class_crop": false
+  },
+  {
+   "file": "cherry_healthy/three-vibrant-leaves-bird-cherry-tree-13905898.jpg",
+   "truth": "Cherry_(including_sour)___healthy",
+   "crop": "Cherry",
+   "pred_unrestricted": "Peach___Bacterial_spot",
+   "score_unrestricted": 0.42393739512230505,
+   "pred_conditioned": "Cherry_(including_sour)___Powdery_mildew",
+   "score_conditioned": 0.6822892147933685,
+   "crop_mass": 0.010876263756379768,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_gray_leaf_spot/IMG_42231.jpg",
+   "truth": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "crop": "Corn",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.3516924153645977,
+   "pred_conditioned": "Corn_(maize)___healthy",
+   "score_conditioned": 0.5102037495078265,
+   "crop_mass": 0.15063738420822967,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_gray_leaf_spot/rsz0803Figure6.jpg",
+   "truth": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Northern_Leaf_Blight",
+   "score_unrestricted": 0.9084765736485033,
+   "pred_conditioned": "Corn_(maize)___Northern_Leaf_Blight",
+   "score_conditioned": 0.9894090042369172,
+   "crop_mass": 0.9182012390812704,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_gray_leaf_spot/show_picture.asp_id=aaaaaaaaaaogcqq&w2=420&h2=378&clip=center,420,378&meta=0.jpg",
+   "truth": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.7720151248115914,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.944565825185147,
+   "crop_mass": 0.8173227362532056,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_gray_leaf_spot/strom5.jpg",
+   "truth": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.9117616664588375,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.9899097209393684,
+   "crop_mass": 0.9210553721945747,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/02c.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.8317723745488774,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.895938522767053,
+   "crop_mass": 0.9283810813045495,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/0796.20graylssymt.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.8957595064710296,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.9899316551944068,
+   "crop_mass": 0.9048700501400945,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/07c.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.7467655121086215,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.6006916044921962,
+   "crop_mass": 0.09005390110765729,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/0c.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___healthy",
+   "score_unrestricted": 0.8912171769851698,
+   "pred_conditioned": "Corn_(maize)___healthy",
+   "score_conditioned": 0.9847480123815433,
+   "crop_mass": 0.9050205390410733,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/1321189.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.8446581034114435,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.9802801437695837,
+   "crop_mass": 0.8616497118501073,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/160314_web.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Northern_Leaf_Blight",
+   "score_unrestricted": 0.8863064977935707,
+   "pred_conditioned": "Corn_(maize)___Northern_Leaf_Blight",
+   "score_conditioned": 0.9871854233104181,
+   "crop_mass": 0.8978115730492039,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/2013Corn_GrayLeafSpot_0815_0003.JPG.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.9033289834522684,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.9917983081610552,
+   "crop_mass": 0.9107990768074384,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/2015070295153021.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Northern_Leaf_Blight",
+   "score_unrestricted": 0.8770066232933938,
+   "pred_conditioned": "Corn_(maize)___Northern_Leaf_Blight",
+   "score_conditioned": 0.9732432583554914,
+   "crop_mass": 0.9011175939459262,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/Common%20Diseases%20Figure%201.JPG.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.8627182769997475,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.9867498789638045,
+   "crop_mass": 0.8743028961966494,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/corn-disease-update-fig-3-gray-leaf-spot.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.8904666144237775,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.9840605301306081,
+   "crop_mass": 0.9048900826309856,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/corn-gray-leaf-spot-f4.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.906336572492028,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.9914778381171491,
+   "crop_mass": 0.9141269100005228,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_northern_leaf_blight/Corn-SCLB-2017-1.jpg",
+   "truth": "Corn_(maize)___Northern_Leaf_Blight",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.7585067923059888,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.9823012425539182,
+   "crop_mass": 0.7721733002535164,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/0796.39maizerust.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.8942675351983301,
+   "pred_conditioned": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_conditioned": 0.9586599337715591,
+   "crop_mass": 0.9328308232097523,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/0796.40comrust.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.8834233613160516,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.9819325155982422,
+   "crop_mass": 0.8996782846913121,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/0796.47southrust.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.8439771208136175,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.9865308820596558,
+   "crop_mass": 0.8554999505454731,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/0796.52srusttelia.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.8607580365572879,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.9878982844585581,
+   "crop_mass": 0.8713022890094879,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/12-19striprustJIM.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.45883689511179593,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.5207282698267716,
+   "crop_mass": 0.8811445848031935,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/1355.50commonrust.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.49611511504296985,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.5864602918329666,
+   "crop_mass": 0.845948347998762,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/2256-body-1501555581-1.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.9019049821185159,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.9847214956553012,
+   "crop_mass": 0.9158985419713281,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/393.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.9079077177359757,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.9890968475258245,
+   "crop_mass": 0.9179158946942968,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/5496239405_d95bdb97d1_z.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.5297638866183838,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.570984144338233,
+   "crop_mass": 0.23212110786265,
+   "single_class_crop": false
+  },
+  {
+   "file": "corn_common_rust/80104747.jpg",
+   "truth": "Corn_(maize)___Common_rust_",
+   "crop": "Corn",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.6642205426324674,
+   "pred_conditioned": "Corn_(maize)___Common_rust_",
+   "score_conditioned": 0.763563910314788,
+   "crop_mass": 0.8698951504382062,
+   "single_class_crop": false
+  },
+  {
+   "file": "peach_healthy/00pe.jpg",
+   "truth": "Peach___healthy",
+   "crop": "Peach",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8966576474608706,
+   "pred_conditioned": "Peach___Bacterial_spot",
+   "score_conditioned": 0.501912472756137,
+   "crop_mass": 0.0055515817234735474,
+   "single_class_crop": false
+  },
+  {
+   "file": "peach_healthy/7190f27ead55c0f6e3ff8b982972810a5446a9713a49d_1260x1260.jpg",
+   "truth": "Peach___healthy",
+   "crop": "Peach",
+   "pred_unrestricted": "Corn_(maize)___Northern_Leaf_Blight",
+   "score_unrestricted": 0.17927162776191138,
+   "pred_conditioned": "Peach___healthy",
+   "score_conditioned": 0.9631026444471149,
+   "crop_mass": 0.15709441254179796,
+   "single_class_crop": false
+  },
+  {
+   "file": "peach_healthy/depositphotos_3786198-Peach-leaf.jpg",
+   "truth": "Peach___healthy",
+   "crop": "Peach",
+   "pred_unrestricted": "Apple___healthy",
+   "score_unrestricted": 0.7319970295880939,
+   "pred_conditioned": "Peach___healthy",
+   "score_conditioned": 0.9693081909745646,
+   "crop_mass": 0.1103347491430891,
+   "single_class_crop": false
+  },
+  {
+   "file": "peach_healthy/peach-leaf-10223898.jpg",
+   "truth": "Peach___healthy",
+   "crop": "Peach",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.8733193811774663,
+   "pred_conditioned": "Peach___Bacterial_spot",
+   "score_conditioned": 0.6021564347485477,
+   "crop_mass": 0.0075485266979493275,
+   "single_class_crop": false
+  },
+  {
+   "file": "peach_healthy/peach-leaf-16690421.jpg",
+   "truth": "Peach___healthy",
+   "crop": "Peach",
+   "pred_unrestricted": "Peach___Bacterial_spot",
+   "score_unrestricted": 0.8045664345514937,
+   "pred_conditioned": "Peach___Bacterial_spot",
+   "score_conditioned": 0.9948194437664776,
+   "crop_mass": 0.8087562417410454,
+   "single_class_crop": false
+  },
+  {
+   "file": "peach_healthy/peach-leaf-isolated-white-background-42295220.jpg",
+   "truth": "Peach___healthy",
+   "crop": "Peach",
+   "pred_unrestricted": "Peach___Bacterial_spot",
+   "score_unrestricted": 0.8781693083663552,
+   "pred_conditioned": "Peach___Bacterial_spot",
+   "score_conditioned": 0.9963716109539901,
+   "crop_mass": 0.8813672516477458,
+   "single_class_crop": false
+  },
+  {
+   "file": "peach_healthy/rose_tree_220430.jpg",
+   "truth": "Peach___healthy",
+   "crop": "Peach",
+   "pred_unrestricted": "Cherry_(including_sour)___Powdery_mildew",
+   "score_unrestricted": 0.1942833886633328,
+   "pred_conditioned": "Peach___healthy",
+   "score_conditioned": 0.6514184798542025,
+   "crop_mass": 0.016002728146664515,
+   "single_class_crop": false
+  },
+  {
+   "file": "peach_healthy/stock-photo-peach-leaf-isolated-on-white-background-281097503.jpg",
+   "truth": "Peach___healthy",
+   "crop": "Peach",
+   "pred_unrestricted": "Peach___Bacterial_spot",
+   "score_unrestricted": 0.8543242861152497,
+   "pred_conditioned": "Peach___Bacterial_spot",
+   "score_conditioned": 0.9943551307369881,
+   "crop_mass": 0.859174212217368,
+   "single_class_crop": false
+  },
+  {
+   "file": "peach_healthy/stock-photo-peach-tree-leaf-isolated-over-white-background-back-side-64472731.jpg",
+   "truth": "Peach___healthy",
+   "crop": "Peach",
+   "pred_unrestricted": "Apple___healthy",
+   "score_unrestricted": 0.6908146195478266,
+   "pred_conditioned": "Peach___healthy",
+   "score_conditioned": 0.9343460601139887,
+   "crop_mass": 0.07454740568779053,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_early_blight/3023.jpg",
+   "truth": "Potato___Early_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8890316602158419,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.5197512278634835,
+   "crop_mass": 0.01157403290015489,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_early_blight/backus-056-potato-blight.jpg",
+   "truth": "Potato___Early_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8286542526400135,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.47743651210667404,
+   "crop_mass": 0.015093193939722577,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_early_blight/early-blight-alternaria-alternata-leaf-spotting-on-potato-leaf-X91XJE.jpg",
+   "truth": "Potato___Early_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Potato___Early_blight",
+   "score_unrestricted": 0.7389212119794418,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.9871046496321537,
+   "crop_mass": 0.7485743403749563,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_early_blight/early-blight-or-target-spot-alternaria-solani-lesions-on-a-tomato-AXK6AY.jpg",
+   "truth": "Potato___Early_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.8648320022301809,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.36969992773874,
+   "crop_mass": 0.009537995312785012,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_early_blight/earlyblightpotato.jpg",
+   "truth": "Potato___Early_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Potato___Early_blight",
+   "score_unrestricted": 0.9012815476573773,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.9947007480793324,
+   "crop_mass": 0.9060831103200252,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_early_blight/potato-blight-phytophthora-infestans-close-up-of-upper-surface-of-BMMRXC.jpg",
+   "truth": "Potato___Early_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.26326038470286245,
+   "pred_conditioned": "Potato___Late_blight",
+   "score_conditioned": 0.9240068190945814,
+   "crop_mass": 0.21971096891544928,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_early_blight/potato-early-blight-alternaria-alternata-lesion-on-a-potato-leaf-a1w1em.jpg",
+   "truth": "Potato___Early_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.8666487009196281,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.6918937967587055,
+   "crop_mass": 0.024190233481630394,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_early_blight/potatobd001.jpg",
+   "truth": "Potato___Early_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.87923120257586,
+   "pred_conditioned": "Potato___Late_blight",
+   "score_conditioned": 0.406403036449819,
+   "crop_mass": 0.009794302957688352,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_late_blight/1421_0.jpeg_itok=FMtmgePj.jpg",
+   "truth": "Potato___Late_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Potato___Early_blight",
+   "score_unrestricted": 0.870525806834446,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.9939030702614987,
+   "crop_mass": 0.8758658996851758,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_late_blight/20090710-lateblight.jpg",
+   "truth": "Potato___Late_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Tomato___Septoria_leaf_spot",
+   "score_unrestricted": 0.8387416394015451,
+   "pred_conditioned": "Potato___Late_blight",
+   "score_conditioned": 0.3895712885038782,
+   "crop_mass": 0.008233533334021732,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_late_blight/2540_600.jpg",
+   "truth": "Potato___Late_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8904428176219553,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.39398216479620907,
+   "crop_mass": 0.00820446203165313,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_late_blight/5816740026_d42ef24413_Phytophthora-Infestans.jpg",
+   "truth": "Potato___Late_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8982145061030371,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.34423303968605384,
+   "crop_mass": 0.008063588369259023,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_late_blight/B2750109-Late_blight_on_a_potato_plant-SPL.jpg",
+   "truth": "Potato___Late_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Squash___Powdery_mildew",
+   "score_unrestricted": 0.6427552998317184,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.9108720107142381,
+   "crop_mass": 0.08757044870644409,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_late_blight/irish-blight-symptoms-on-potato-leaves-atmf8b.jpg",
+   "truth": "Potato___Late_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Tomato___Septoria_leaf_spot",
+   "score_unrestricted": 0.8644071888649144,
+   "pred_conditioned": "Potato___Late_blight",
+   "score_conditioned": 0.3934025933977945,
+   "crop_mass": 0.006292524771482791,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_late_blight/LateBlight04.jpg",
+   "truth": "Potato___Late_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Cherry_(including_sour)___healthy",
+   "score_unrestricted": 0.6495226109115313,
+   "pred_conditioned": "Potato___healthy",
+   "score_conditioned": 0.3589091401890525,
+   "crop_mass": 0.010458420936380983,
+   "single_class_crop": false
+  },
+  {
+   "file": "potato_late_blight/potato-late-blight.jpg",
+   "truth": "Potato___Late_blight",
+   "crop": "Potato",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.9153580818251444,
+   "pred_conditioned": "Potato___Early_blight",
+   "score_conditioned": 0.36075058131497,
+   "crop_mass": 0.0060258685262426365,
+   "single_class_crop": false
+  },
+  {
+   "file": "raspberry_healthy/depositphotos_1323264-Raspberry-leaf-on-white.jpg",
+   "truth": "Raspberry___healthy",
+   "crop": "Raspberry",
+   "pred_unrestricted": "Raspberry___healthy",
+   "score_unrestricted": 0.8887187916251547,
+   "pred_conditioned": "Raspberry___healthy",
+   "score_conditioned": 0.8887187916251547,
+   "crop_mass": 0.8887187916251547,
+   "single_class_crop": true
+  },
+  {
+   "file": "raspberry_healthy/depositphotos_1323551-stock-photo-raspberry-leaves.jpg",
+   "truth": "Raspberry___healthy",
+   "crop": "Raspberry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8908242189184489,
+   "pred_conditioned": "Raspberry___healthy",
+   "score_conditioned": 0.003679356653743505,
+   "crop_mass": 0.003679356653743505,
+   "single_class_crop": true
+  },
+  {
+   "file": "raspberry_healthy/depositphotos_2795312-stock-photo-green-raspberry-leaf.jpg",
+   "truth": "Raspberry___healthy",
+   "crop": "Raspberry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8949338063880765,
+   "pred_conditioned": "Raspberry___healthy",
+   "score_conditioned": 0.0029710461846582004,
+   "crop_mass": 0.0029710461846582004,
+   "single_class_crop": true
+  },
+  {
+   "file": "raspberry_healthy/iron-deficiency-raspberry-leaf-chlorosis-isolated-32457798.jpg",
+   "truth": "Raspberry___healthy",
+   "crop": "Raspberry",
+   "pred_unrestricted": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+   "score_unrestricted": 0.7824980043852393,
+   "pred_conditioned": "Raspberry___healthy",
+   "score_conditioned": 0.003309643027167221,
+   "crop_mass": 0.003309643027167221,
+   "single_class_crop": true
+  },
+  {
+   "file": "raspberry_healthy/leaves-of-raspberry-stock-picture-2529053.jpg",
+   "truth": "Raspberry___healthy",
+   "crop": "Raspberry",
+   "pred_unrestricted": "Apple___healthy",
+   "score_unrestricted": 0.7238077253604734,
+   "pred_conditioned": "Raspberry___healthy",
+   "score_conditioned": 0.053572472970438656,
+   "crop_mass": 0.053572472970438656,
+   "single_class_crop": true
+  },
+  {
+   "file": "raspberry_healthy/Raspberry-leaf.jpg",
+   "truth": "Raspberry___healthy",
+   "crop": "Raspberry",
+   "pred_unrestricted": "Raspberry___healthy",
+   "score_unrestricted": 0.856483335621484,
+   "pred_conditioned": "Raspberry___healthy",
+   "score_conditioned": 0.856483335621484,
+   "crop_mass": 0.856483335621484,
+   "single_class_crop": true
+  },
+  {
+   "file": "raspberry_healthy/three-raspberry-green-leaves-isolated-white-background-62022932.jpg",
+   "truth": "Raspberry___healthy",
+   "crop": "Raspberry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8977254329931156,
+   "pred_conditioned": "Raspberry___healthy",
+   "score_conditioned": 0.003334446694114369,
+   "crop_mass": 0.003334446694114369,
+   "single_class_crop": true
+  },
+  {
+   "file": "soybean_healthy/07feb_ma_sbr3.JPG.jpg",
+   "truth": "Soybean___healthy",
+   "crop": "Soybean",
+   "pred_unrestricted": "Orange___Haunglongbing_(Citrus_greening)",
+   "score_unrestricted": 0.3715092476863558,
+   "pred_conditioned": "Soybean___healthy",
+   "score_conditioned": 0.02180341745331919,
+   "crop_mass": 0.02180341745331919,
+   "single_class_crop": true
+  },
+  {
+   "file": "soybean_healthy/fresh-soy-leaves-isolated-on-260nw-667193923.jpg",
+   "truth": "Soybean___healthy",
+   "crop": "Soybean",
+   "pred_unrestricted": "Soybean___healthy",
+   "score_unrestricted": 0.9144165741313622,
+   "pred_conditioned": "Soybean___healthy",
+   "score_conditioned": 0.9144165741313622,
+   "crop_mass": 0.9144165741313622,
+   "single_class_crop": true
+  },
+  {
+   "file": "soybean_healthy/leaf-raspberry-isolated-on-a-white-stock-photography-image-10106222-1625198.jpg",
+   "truth": "Soybean___healthy",
+   "crop": "Soybean",
+   "pred_unrestricted": "Tomato___Septoria_leaf_spot",
+   "score_unrestricted": 0.7388553942220225,
+   "pred_conditioned": "Soybean___healthy",
+   "score_conditioned": 0.003979523506362584,
+   "crop_mass": 0.003979523506362584,
+   "single_class_crop": true
+  },
+  {
+   "file": "soybean_healthy/resistance1c.jpg",
+   "truth": "Soybean___healthy",
+   "crop": "Soybean",
+   "pred_unrestricted": "Soybean___healthy",
+   "score_unrestricted": 0.42560458169887866,
+   "pred_conditioned": "Soybean___healthy",
+   "score_conditioned": 0.42560458169887866,
+   "crop_mass": 0.42560458169887866,
+   "single_class_crop": true
+  },
+  {
+   "file": "soybean_healthy/Soybean%20edamame%20leaf1.JPG.jpg",
+   "truth": "Soybean___healthy",
+   "crop": "Soybean",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.7823109637437751,
+   "pred_conditioned": "Soybean___healthy",
+   "score_conditioned": 0.0031178517230749173,
+   "crop_mass": 0.0031178517230749173,
+   "single_class_crop": true
+  },
+  {
+   "file": "soybean_healthy/stock-photo-fresh-soy-leaves-isolated-on-white-94266130.jpg",
+   "truth": "Soybean___healthy",
+   "crop": "Soybean",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.8891091305580884,
+   "pred_conditioned": "Soybean___healthy",
+   "score_conditioned": 0.0027970353824913773,
+   "crop_mass": 0.0027970353824913773,
+   "single_class_crop": true
+  },
+  {
+   "file": "soybean_healthy/stock-photo-fresh-soy-leaves-isolated-on-white-94700095.jpg",
+   "truth": "Soybean___healthy",
+   "crop": "Soybean",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.8923261482070124,
+   "pred_conditioned": "Soybean___healthy",
+   "score_conditioned": 0.0032267997118182136,
+   "crop_mass": 0.0032267997118182136,
+   "single_class_crop": true
+  },
+  {
+   "file": "soybean_healthy/stock-photo-soy-leaf-isolated-on-white-background-120961801.jpg",
+   "truth": "Soybean___healthy",
+   "crop": "Soybean",
+   "pred_unrestricted": "Blueberry___healthy",
+   "score_unrestricted": 0.8037561529417961,
+   "pred_conditioned": "Soybean___healthy",
+   "score_conditioned": 0.0042906247666813085,
+   "crop_mass": 0.0042906247666813085,
+   "single_class_crop": true
+  },
+  {
+   "file": "squash_powdery_mildew/powdery-mildew-erysiphe-plantani-on-young-sycamore-leaves-b774tm.jpg",
+   "truth": "Squash___Powdery_mildew",
+   "crop": "Squash",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.7808364165785936,
+   "pred_conditioned": "Squash___Powdery_mildew",
+   "score_conditioned": 0.014525280264902928,
+   "crop_mass": 0.014525280264902928,
+   "single_class_crop": true
+  },
+  {
+   "file": "squash_powdery_mildew/powdery-mildew-on-pumpkin-leaves-close-up-2.jpg",
+   "truth": "Squash___Powdery_mildew",
+   "crop": "Squash",
+   "pred_unrestricted": "Squash___Powdery_mildew",
+   "score_unrestricted": 0.8942473825109071,
+   "pred_conditioned": "Squash___Powdery_mildew",
+   "score_conditioned": 0.8942473825109071,
+   "crop_mass": 0.8942473825109071,
+   "single_class_crop": true
+  },
+  {
+   "file": "squash_powdery_mildew/Powdery-Mildew-on-squash.jpg",
+   "truth": "Squash___Powdery_mildew",
+   "crop": "Squash",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.3565402624166231,
+   "pred_conditioned": "Squash___Powdery_mildew",
+   "score_conditioned": 0.059333157525463885,
+   "crop_mass": 0.059333157525463885,
+   "single_class_crop": true
+  },
+  {
+   "file": "squash_powdery_mildew/powdery-mildew-sphaerotheca-fuliginea-infection-on-pumpkin-leaves-ajdkkx.jpg",
+   "truth": "Squash___Powdery_mildew",
+   "crop": "Squash",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.8758787975764853,
+   "pred_conditioned": "Squash___Powdery_mildew",
+   "score_conditioned": 0.010809612252963346,
+   "crop_mass": 0.010809612252963346,
+   "single_class_crop": true
+  },
+  {
+   "file": "squash_powdery_mildew/squash-leave-w-powd-mild.jpg",
+   "truth": "Squash___Powdery_mildew",
+   "crop": "Squash",
+   "pred_unrestricted": "Squash___Powdery_mildew",
+   "score_unrestricted": 0.6291251009636426,
+   "pred_conditioned": "Squash___Powdery_mildew",
+   "score_conditioned": 0.6291251009636426,
+   "crop_mass": 0.6291251009636426,
+   "single_class_crop": true
+  },
+  {
+   "file": "squash_powdery_mildew/surface.jpg",
+   "truth": "Squash___Powdery_mildew",
+   "crop": "Squash",
+   "pred_unrestricted": "Pepper,_bell___healthy",
+   "score_unrestricted": 0.9392812705835166,
+   "pred_conditioned": "Squash___Powdery_mildew",
+   "score_conditioned": 0.005964844286621901,
+   "crop_mass": 0.005964844286621901,
+   "single_class_crop": true
+  },
+  {
+   "file": "strawberry_healthy/strawberry-leaf--stock-photo-1431216.jpg",
+   "truth": "Strawberry___healthy",
+   "crop": "Strawberry",
+   "pred_unrestricted": "Raspberry___healthy",
+   "score_unrestricted": 0.8246818186518987,
+   "pred_conditioned": "Strawberry___Leaf_scorch",
+   "score_conditioned": 0.9204000999457749,
+   "crop_mass": 0.05775115945423777,
+   "single_class_crop": false
+  },
+  {
+   "file": "strawberry_healthy/strawberry-leaf-22360816.jpg",
+   "truth": "Strawberry___healthy",
+   "crop": "Strawberry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.7733521536656035,
+   "pred_conditioned": "Strawberry___healthy",
+   "score_conditioned": 0.5423053920858295,
+   "crop_mass": 0.011850421814646342,
+   "single_class_crop": false
+  },
+  {
+   "file": "strawberry_healthy/strawberry-leaves-collection-white-background-36684676.jpg",
+   "truth": "Strawberry___healthy",
+   "crop": "Strawberry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8775677792972713,
+   "pred_conditioned": "Strawberry___Leaf_scorch",
+   "score_conditioned": 0.5405049063058696,
+   "crop_mass": 0.00634035301629945,
+   "single_class_crop": false
+  },
+  {
+   "file": "strawberry_healthy/strawberry-leaves-isolated-white-17473157.jpg",
+   "truth": "Strawberry___healthy",
+   "crop": "Strawberry",
+   "pred_unrestricted": "Apple___healthy",
+   "score_unrestricted": 0.5993902804501383,
+   "pred_conditioned": "Strawberry___Leaf_scorch",
+   "score_conditioned": 0.8659988251635332,
+   "crop_mass": 0.03878855227278221,
+   "single_class_crop": false
+  },
+  {
+   "file": "strawberry_healthy/strawberry-leaves-isolated-white-34722259.jpg",
+   "truth": "Strawberry___healthy",
+   "crop": "Strawberry",
+   "pred_unrestricted": "Apple___Black_rot",
+   "score_unrestricted": 0.8601272275844518,
+   "pred_conditioned": "Strawberry___Leaf_scorch",
+   "score_conditioned": 0.8052196744303716,
+   "crop_mass": 0.018783335822282234,
+   "single_class_crop": false
+  },
+  {
+   "file": "strawberry_healthy/strawberry-leaves-stock-image-948674.jpg",
+   "truth": "Strawberry___healthy",
+   "crop": "Strawberry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.8429021309149606,
+   "pred_conditioned": "Strawberry___Leaf_scorch",
+   "score_conditioned": 0.5148899771179081,
+   "crop_mass": 0.009191432492717967,
+   "single_class_crop": false
+  },
+  {
+   "file": "strawberry_healthy/strawberry-leaves-stock-picture-948708.jpg",
+   "truth": "Strawberry___healthy",
+   "crop": "Strawberry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.5368347180435835,
+   "pred_conditioned": "Strawberry___Leaf_scorch",
+   "score_conditioned": 0.7396656836514202,
+   "crop_mass": 0.02646267198148544,
+   "single_class_crop": false
+  },
+  {
+   "file": "strawberry_healthy/wild-strawberry-leaf-top-view-rotated-KTBXCY.jpg",
+   "truth": "Strawberry___healthy",
+   "crop": "Strawberry",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.7845667106364106,
+   "pred_conditioned": "Strawberry___Leaf_scorch",
+   "score_conditioned": 0.7829476956531076,
+   "crop_mass": 0.023525592675831382,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_black_rot/03gb.jpg",
+   "truth": "Grape___Black_rot",
+   "crop": "Grape",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.7527268608803342,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.6201805564551423,
+   "crop_mass": 0.038756447896577055,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_black_rot/35589125035_662dd5b258_b.jpg",
+   "truth": "Grape___Black_rot",
+   "crop": "Grape",
+   "pred_unrestricted": "Corn_(maize)___Common_rust_",
+   "score_unrestricted": 0.8689797426258462,
+   "pred_conditioned": "Grape___Black_rot",
+   "score_conditioned": 0.29602891288732064,
+   "crop_mass": 0.015191009866703232,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_black_rot/5-29black-rot-chardRR.jpg",
+   "truth": "Grape___Black_rot",
+   "crop": "Grape",
+   "pred_unrestricted": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+   "score_unrestricted": 0.7092744006148803,
+   "pred_conditioned": "Grape___Esca_(Black_Measles)",
+   "score_conditioned": 0.7728701412857798,
+   "crop_mass": 0.09978258439441863,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_black_rot/Black%20rot%20on%20foliage.jpg",
+   "truth": "Grape___Black_rot",
+   "crop": "Grape",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.6340257149227363,
+   "pred_conditioned": "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
+   "score_conditioned": 0.4985430505725085,
+   "crop_mass": 0.0202919382866288,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_black_rot/Black%20rot%20on%20foliage2.jpg",
+   "truth": "Grape___Black_rot",
+   "crop": "Grape",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.5358478085566927,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.46081031252363425,
+   "crop_mass": 0.050376668216896,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_black_rot/brleaf2_zoom.jpg",
+   "truth": "Grape___Black_rot",
+   "crop": "Grape",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.7193244916650569,
+   "pred_conditioned": "Grape___Esca_(Black_Measles)",
+   "score_conditioned": 0.5726978059578657,
+   "crop_mass": 0.04807689766815393,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_black_rot/grape_F15a.jpg",
+   "truth": "Grape___Black_rot",
+   "crop": "Grape",
+   "pred_unrestricted": "Tomato___Early_blight",
+   "score_unrestricted": 0.39333003676888867,
+   "pred_conditioned": "Grape___Esca_(Black_Measles)",
+   "score_conditioned": 0.5184995817334163,
+   "crop_mass": 0.043470338866513025,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_black_rot/piano%20gully%20spray%20seed%20damage%2006%20%289%29.JPG.jpg",
+   "truth": "Grape___Black_rot",
+   "crop": "Grape",
+   "pred_unrestricted": "Grape___Black_rot",
+   "score_unrestricted": 0.7762771158794557,
+   "pred_conditioned": "Grape___Black_rot",
+   "score_conditioned": 0.8374318405705555,
+   "crop_mass": 0.9269734899864398,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/0000.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Grape___healthy",
+   "score_unrestricted": 0.8686951256314682,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.9850654104329126,
+   "crop_mass": 0.881865423789165,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/730-grape-leaf-2560x1600-nature-wallpaper.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.7559026343575536,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.8778556168366456,
+   "crop_mass": 0.08797391829134972,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/depositphotos_3443387-stock-photo-the-green-grape-leaf-on.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Grape___healthy",
+   "score_unrestricted": 0.7370692588289433,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.9893583506282191,
+   "crop_mass": 0.7449972584361589,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/depositphotos_6898486-stock-photo-grape-leaves.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Grape___healthy",
+   "score_unrestricted": 0.8234484174722526,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.9922198495151594,
+   "crop_mass": 0.8299052048541705,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/DSCN7317.JPG.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.46965559098972803,
+   "pred_conditioned": "Grape___Esca_(Black_Measles)",
+   "score_conditioned": 0.5061870963727606,
+   "crop_mass": 0.08465417161850974,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/grape-leaf-14309623.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Grape___healthy",
+   "score_unrestricted": 0.8849268083039498,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.9881733632577426,
+   "crop_mass": 0.8955177716859148,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/grape-leaf-picture-id119212425_k=6&m=119212425&s=612x612&w=0&h=8RZBWGcvXe4tAwhhvYZVFzWyRyiN5iTxKfWBpPT1FcU=.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Grape___healthy",
+   "score_unrestricted": 0.8758598498099461,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.9890789224603602,
+   "crop_mass": 0.8855308003442449,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/grapes-leaves.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Corn_(maize)___healthy",
+   "score_unrestricted": 0.2558927127832905,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.8292718633623729,
+   "crop_mass": 0.11544896606938529,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/grapevine-leaf-7466071.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Tomato___Late_blight",
+   "score_unrestricted": 0.42560367040925723,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.9618365054445132,
+   "crop_mass": 0.39227407040434564,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/latest_cb=20100621160325.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Grape___healthy",
+   "score_unrestricted": 0.8635877544065518,
+   "pred_conditioned": "Grape___healthy",
+   "score_conditioned": 0.9936292938187091,
+   "crop_mass": 0.8691246924571008,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/P1130286.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.5439754415703627,
+   "pred_conditioned": "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
+   "score_conditioned": 0.3282136294573984,
+   "crop_mass": 0.013140527271788494,
+   "single_class_crop": false
+  },
+  {
+   "file": "grape_healthy/vitis-riparia-le-ahaines-b.jpg",
+   "truth": "Grape___healthy",
+   "crop": "Grape",
+   "pred_unrestricted": "Strawberry___Leaf_scorch",
+   "score_unrestricted": 0.9091134129189307,
+   "pred_conditioned": "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
+   "score_conditioned": 0.27070285939916827,
+   "crop_mass": 0.008649826750491817,
+   "single_class_crop": false
+  }
+ ]
+}

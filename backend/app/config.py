@@ -11,6 +11,8 @@ except ImportError:
 MODEL_DIR = Path(os.getenv("AGRISENTRY_MODEL_DIR", "").strip() or ROOT / "models")  # blank in .env = default
 MODEL_PATH = MODEL_DIR / "efficientnet_v2_s_best.onnx"
 CLASSES_PATH = MODEL_DIR / "classes.json"
+MODEL_VERSION = "efficientnet_v2_s@BiernyVR/crop-disease-classifier (weights sha256 038e6093)"
+UPLOAD_DIR = Path(os.getenv("AGRISENTRY_UPLOAD_DIR", "").strip() or ROOT / "data" / "uploads")  # image files; DB stores references only
 
 OWM_API_KEY = os.getenv("OPENWEATHER_API_KEY", "").strip()
 # e.g. mysql+pymysql://user:pass@localhost:3306/agrisentry (any SQLAlchemy URL works)

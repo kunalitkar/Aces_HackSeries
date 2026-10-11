@@ -1,5 +1,6 @@
-"""Download the tomato classes of the PlantDoc TEST split for external evaluation (no training use)."""
+"""Download the PlantDoc TEST split (all classes that map to a model class) for external evaluation (no training use)."""
 import json
+import re
 import sys
 import urllib.parse
 import urllib.request
@@ -19,6 +20,25 @@ CLASS_MAP = {
     "mosaic_virus": ("Tomato leaf mosaic virus", "Tomato___Tomato_mosaic_virus"),
     "yellow_leaf_curl_virus": ("Tomato leaf yellow virus", "Tomato___Tomato_Yellow_Leaf_Curl_Virus"),
     "leaf_mold": ("Tomato mold leaf", "Tomato___Leaf_Mold"),
+    "apple_scab": ("Apple Scab Leaf", "Apple___Apple_scab"),
+    "apple_healthy": ("Apple leaf", "Apple___healthy"),
+    "apple_rust": ("Apple rust leaf", "Apple___Cedar_apple_rust"),
+    "pepper_bacterial_spot": ("Bell_pepper leaf spot", "Pepper,_bell___Bacterial_spot"),
+    "pepper_healthy": ("Bell_pepper leaf", "Pepper,_bell___healthy"),
+    "blueberry_healthy": ("Blueberry leaf", "Blueberry___healthy"),
+    "cherry_healthy": ("Cherry leaf", "Cherry_(including_sour)___healthy"),
+    "corn_gray_leaf_spot": ("Corn Gray leaf spot", "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot"),
+    "corn_northern_leaf_blight": ("Corn leaf blight", "Corn_(maize)___Northern_Leaf_Blight"),
+    "corn_common_rust": ("Corn rust leaf", "Corn_(maize)___Common_rust_"),
+    "peach_healthy": ("Peach leaf", "Peach___healthy"),
+    "potato_early_blight": ("Potato leaf early blight", "Potato___Early_blight"),
+    "potato_late_blight": ("Potato leaf late blight", "Potato___Late_blight"),
+    "raspberry_healthy": ("Raspberry leaf", "Raspberry___healthy"),
+    "soybean_healthy": ("Soyabean leaf", "Soybean___healthy"),
+    "squash_powdery_mildew": ("Squash Powdery mildew leaf", "Squash___Powdery_mildew"),
+    "strawberry_healthy": ("Strawberry leaf", "Strawberry___healthy"),
+    "grape_black_rot": ("grape leaf black rot", "Grape___Black_rot"),
+    "grape_healthy": ("grape leaf", "Grape___healthy"),
 }
 
 
@@ -31,7 +51,7 @@ if __name__ == "__main__":
     for folder, (remote, _) in CLASS_MAP.items():
         (OUT / folder).mkdir(parents=True, exist_ok=True)
         for item in json.loads(get(API + urllib.parse.quote(remote))):
-            dest = OUT / folder / item["name"]
+            dest = OUT / folder / re.sub(r'[<>:"/\|?*]', "_", item["name"])[:150]  # Windows-safe name
             if item["type"] != "file" or dest.exists():
                 continue
             try:

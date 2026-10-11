@@ -1,47 +1,20 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import App from './App'
+import { alertsState, installFetch, lastForecastBodies } from './test/fixtures'
 
-vi.mock('recharts', async () => {
-  const React = await import('react')
-  const Stub = ({ children }: { children?: React.ReactNode }) => React.createElement('div', null, children)
-  return { ResponsiveContainer: Stub, AreaChart: Stub, Area: Stub, ComposedChart: Stub, Bar: Stub, Line: Stub, CartesianGrid: Stub, XAxis: Stub, YAxis: Stub, Tooltip: Stub, Legend: Stub, ReferenceLine: Stub }
-})
+vi.mock('recharts', async () => (await import('./test/fixtures')).rechartsStub())
 
-const farm = { id: 1, name: 'Test Farm', location: 'Nashik', lat: 1, lon: 1, crop: 'Tomato' }
-const mk = (mode: string) => {
-  const hi = mode === 'conducive'
-  return {
-    farm,
-    weather: { status: 'demo', label: hi ? 'Simulated: disease-conducive' : 'Simulated: normal', fetched_at: '2026-10-11T10:00:00+05:30',
-      current: { time: '2026-10-11T10:00:00+05:30', temp_c: hi ? 19 : 29, rh: hi ? 93 : 50, rain_mm: 0 },
-      series: [{ time: '2026-10-11T10:00:00+05:30', temp_c: 20, rh: 90, rain_mm: 0 }] },
-    risk: { status: 'ok', index: hi ? 88 : 4, category: hi ? 'Very High' : 'Low', explanation: 'x',
-      factors: [{ key: 'duration', label: 'Favourable-hours run', points: hi ? 50 : 0, max_points: 50, detail: 'd', available: true }], trend: [], peak: null },
-    advisory: { level: hi ? 'watch' : 'info', headline: hi ? 'High blight-favourability weather – scout your crop' : 'Routine monitoring',
-      what_is_happening: 'w', why: 'y', inspect: ['look'], actions: ['act'], reassess: 'r', consult: 'c', severity: 's' },
-  }
-}
-
-beforeEach(() => {
-  vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
-    const ok = (b: unknown) => ({ ok: true, status: 200, json: async () => b })
-    if (url.includes('/api/health')) return ok({ status: 'ok', model: { available: true }, weather: { live_configured: false }, database: { mode: 'demo', configured: false, connected: false } })
-    if (url.includes('/farms')) return ok([farm])
-    if (url.includes('/risk/forecast')) return ok(mk(JSON.parse(init!.body as string).mode))
-    if (url.includes('/risk/history')) return ok({ source: 'synthetic', persistent: false, entries: [{ id: 's', type: 'risk', created_at: '2026-10-10T10:00:00Z', title: 'Example entry', detail: 'Synthetic', synthetic: true, data_mode: 'synthetic' }] })
-    return ok({})
-  }))
-  URL.createObjectURL = vi.fn(() => 'blob:x'); URL.revokeObjectURL = vi.fn()
-})
+beforeEach(() => { alertsState.alerts = []; installFetch() })
 
 test('navigation reaches every destination', async () => {
   const user = userEvent.setup()
   render(<App />)
   await screen.findByText('Routine monitoring')
-  for (const [nav, heading] of [['Crop Monitoring', 'Crop monitoring'], ['Weather Outlook', 'Weather outlook'], ['Field Advisories', 'Field advisories'], ['Assessment History', 'Assessment history'], ['Overview', 'Test Farm']] as const) {
-    await user.click(screen.getAllByRole('button', { name: nav })[0])
+  for (const [nav, heading] of [['Crop Monitoring', 'Crop monitoring'], ['Weather Outlook', 'Weather outlook'], ['Field Advisories', 'Field advisories'],
+    ['Alerts', 'Alerts'], ['Assessment History', 'Assessment history'], ['Overview', 'Farm A']] as const) {
+    await user.click(screen.getAllByRole('button', { name: new RegExp(`^${nav}`) })[0])
     expect(await screen.findByRole('heading', { level: 1, name: heading })).toBeInTheDocument()
   }
 })
@@ -62,7 +35,67 @@ test('rejects unsupported upload type client-side', async () => {
   render(<App />)
   await screen.findByText('Routine monitoring')
   await user.click(screen.getAllByRole('button', { name: 'Crop Monitoring' })[0])
-  const input = await screen.findByTestId('file-input')
-  await user.upload(input, new File(['hi'], 'a.txt', { type: 'text/plain' }))
+  await user.upload(await screen.findByTestId('file-input'), new File(['hi'], 'a.txt', { type: 'text/plain' }))
   await waitFor(() => expect(screen.getAllByRole('alert')[0]).toHaveTextContent(/Unsupported file type/))
+})
+
+test('crop selector comes from the model catalogue and re-runs the photo for the new crop', async () => {
+  const user = userEvent.setup()
+  render(<App />)
+  await screen.findByText('Routine monitoring')
+  await user.click(screen.getAllByRole('button', { name: 'Crop Monitoring' })[0])
+  const select = await screen.findByLabelText('Crop')
+  expect(within(select).getAllByRole('option').map((o) => o.textContent)).toEqual(['Tomato', 'Grape', 'Soybean'])
+  expect(within(screen.getByLabelText('Supported classes')).getAllByRole('listitem')).toHaveLength(3)
+  await user.upload(screen.getByTestId('file-input'), new File(['x'], 'leaf.jpg', { type: 'image/jpeg' }))
+  expect(await screen.findByText('Tomato — healthy')).toBeInTheDocument()
+  await user.selectOptions(select, 'Grape')
+  expect(await screen.findByText('Grape — healthy')).toBeInTheDocument()
+  await waitFor(() => expect(lastForecastBodies.at(-1)).toMatchObject({ crop: 'Grape' }))
+  expect(await screen.findByText(/Weather-based forecasting: not available for this crop/)).toBeInTheDocument()
+  await user.selectOptions(select, 'Soybean')
+  expect(await screen.findByText(/Only one class exists for Soybean/)).toBeInTheDocument()
+})
+
+test('changing farm clears the previous photo and uses the new farm crop', async () => {
+  const user = userEvent.setup()
+  render(<App />)
+  await screen.findByText('Routine monitoring')
+  await user.click(screen.getAllByRole('button', { name: 'Crop Monitoring' })[0])
+  await user.upload(await screen.findByTestId('file-input'), new File(['x'], 'leaf.jpg', { type: 'image/jpeg' }))
+  await screen.findByText('Tomato — healthy')
+  await user.selectOptions(screen.getByLabelText('Farm or location'), '2')
+  await waitFor(() => expect(screen.queryByAltText('Leaf preview')).not.toBeInTheDocument())
+  expect(screen.getByLabelText('Crop')).toHaveValue('Grape')
+  await waitFor(() => expect(lastForecastBodies.at(-1)).toMatchObject({ farm_id: 2, crop: 'Grape', image: null }))
+})
+
+test('alerts can be acknowledged and simulated alerts are labelled', async () => {
+  alertsState.alerts = [
+    { id: 1, farm_id: 1, created_at: '2026-10-11T10:00:00Z', level: 'alert', message: 'Late-blight favourability is Very High now – Farm A', kind: 'weather', explanation: 'e', location_label: 'Farm A', category: 'Very High', simulated: true, acknowledged: false, acknowledged_at: null },
+    { id: 2, farm_id: 1, created_at: '2026-10-11T09:00:00Z', level: 'warning', message: 'Real alert', kind: 'weather', explanation: 'e', location_label: 'Farm A', category: 'High', simulated: false, acknowledged: false, acknowledged_at: null },
+  ]
+  const user = userEvent.setup()
+  render(<App />)
+  await screen.findByText('Routine monitoring')
+  expect(within(screen.getByRole('button', { name: 'Notifications' })).getByText('2')).toBeInTheDocument()
+  await user.click(screen.getAllByRole('button', { name: /^Alerts/ })[0])
+  expect(await screen.findByText('simulated')).toBeInTheDocument()
+  expect(screen.getByText('live weather')).toBeInTheDocument()
+  await user.click(screen.getAllByRole('button', { name: /Acknowledge/ })[0])
+  await waitFor(() => expect(screen.queryByText(/Very High now/)).not.toBeInTheDocument())  // hidden from "Open"
+  expect(within(screen.getByRole('button', { name: 'Notifications' })).getByText('1')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'All' }))
+  expect(await screen.findByText(/Very High now/)).toBeInTheDocument()
+})
+
+test('report builder includes limitations and simulated label', async () => {
+  const { reportHtml } = await import('./report')
+  const { forecastFor } = await import('./test/fixtures')
+  const f = forecastFor({ farm_id: 1, mode: 'conducive' }, {}) as never
+  const html = reportHtml({ image: { result: null } } as never, f)
+  expect(html).toContain('88/100')
+  expect(html).toContain('SIMULATED weather')
+  expect(html).toContain('Visual severity is not estimated')
+  expect(html).not.toMatch(/<script/i)
 })

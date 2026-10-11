@@ -25,6 +25,38 @@ RH_WET = 90.0
 FULL_RUN_H = 11.0
 RAIN_FULL_MM = 5.0
 MAX_PTS = {"duration": 50, "temperature": 20, "humidity": 20, "rain": 10}
+STALE_AFTER_H = 3.0  # an "observation" older than this is flagged stale
+
+# Phytophthora infestans causes late blight in both tomato and potato; Smith-period ideas were developed for
+# potato. No other crop/disease gets a weather model: applying these rules elsewhere would be unfounded.
+APPLICABLE = {"tomato": "Late blight", "potato": "Late blight"}
+
+RULES = {
+    "disease": "Late blight (Phytophthora infestans), tomato and potato",
+    "status": "Experimental decision support; thresholds are documented heuristics, not a validated outbreak model",
+    "favourable_interval": f"{T_MIN:.0f}–{T_MAX:.0f} °C AND leaf-wetness proxy",
+    "leaf_wetness_proxy": f"RH ≥ {RH_WET:.0f} %, or rain ≥ 0.2 mm in the interval with RH ≥ 80 %",
+    "window": f"next {WINDOW_H} h from each time point",
+    "components": [
+        {"key": "duration", "max": MAX_PTS["duration"], "rule": f"longest unbroken favourable run; full score at {FULL_RUN_H:.0f} h (Smith-period length)"},
+        {"key": "temperature", "max": MAX_PTS["temperature"], "rule": "mean suitability: 1 at 15–22 °C, linear to 0 at 10 °C and 27 °C"},
+        {"key": "humidity", "max": MAX_PTS["humidity"], "rule": "mean of (RH − 70) / 25, clipped to 0–1"},
+        {"key": "rain", "max": MAX_PTS["rain"], "rule": f"total rain in window / {RAIN_FULL_MM:.0f} mm, clipped to 0–1"},
+    ],
+    "categories": "Low < 25 ≤ Moderate < 50 ≤ High < 75 ≤ Very High",
+    "missing_data": "points without temperature or humidity are skipped; < 50 % usable points → unavailable",
+}
+
+
+def applicable(crop: str | None) -> str | None:
+    """Disease covered by the weather model for this crop, or None."""
+    return APPLICABLE.get((crop or "").strip().lower())
+
+
+def not_applicable(crop: str) -> dict:
+    return {"status": "not_applicable", "crop": crop,
+            "reason": f"AgriSentry has no validated weather-risk model for {crop}. The late-blight rules apply only to tomato and potato; "
+                      "image screening is still available."}
 
 
 def category(index: float) -> str:
@@ -96,8 +128,10 @@ def score_window(pts: list[dict]) -> dict:
             "mean_temp": sum(temps) / len(temps), "mean_rh": sum(rhs) / len(rhs)}
 
 
-def assess(points: list[dict]) -> dict:
-    """Assess a weather series [{time, temp_c, rh, rain_mm}] (rain_mm may be None)."""
+def assess(points: list[dict], now=None) -> dict:
+    """Assess a weather series [{time, temp_c, rh, rain_mm, kind?}] (rain_mm may be None).
+
+    `now` (aware datetime) enables the staleness check on the first (observed) point."""
     if len(points) < 2:
         return {"status": "unavailable", "reason": "Not enough weather data points for a forecast-based assessment."}
     pts = _prep(points)
@@ -116,6 +150,10 @@ def assess(points: list[dict]) -> dict:
             trend.append({"time": p["time"], "index": s["index"], "category": category(s["index"]),
                           "temp_c": p.get("temp_c"), "rh": p.get("rh"), "rain_mm": p.get("rain_mm")})
     peak = max(trend, key=lambda t: t["index"]) if trend else None
+    peak48 = max((t for t in trend if t["time"] < pts[0]["time"] + timedelta(hours=48)), key=lambda t: t["index"], default=None)
+    intervals = [{"time": p["time"], "hours": round(p["_step"], 2), "favourable": favourable(p), "kind": p.get("kind", "forecast")} for p in pts]
+    age_h = (now - pts[0]["time"]).total_seconds() / 3600 if now is not None else None
+    stale = age_h is not None and pts[0].get("kind") == "observed" and age_h > STALE_AFTER_H
     idx, cat = head["index"], category(head["index"])
     explanation = (
         f"Over the next {WINDOW_H} h the weather scores {idx:.0f}/100 ({cat}) for late-blight favourability: "
@@ -126,7 +164,12 @@ def assess(points: list[dict]) -> dict:
     )
     if peak and peak["index"] > idx + 5:
         explanation += f" Favourability is forecast to peak near {peak['index']:.0f}/100 ({peak['category']})."
+    if stale:
+        explanation += f" Warning: the latest observation is {age_h:.1f} h old; refresh before acting on this result."
     return {"status": "ok", "index": idx, "category": cat, "factors": head["factors"], "trend": trend,
-            "peak": peak, "window_hours": WINDOW_H, "coverage": round(head["coverage"], 2),
+            "peak": peak, "peak_48h": peak48, "intervals": intervals, "favourable_hours_48h": round(sum(
+                i["hours"] for i in intervals if i["favourable"] and i["time"] < pts[0]["time"] + timedelta(hours=48)), 1),
+            "data_age_hours": round(age_h, 2) if age_h is not None else None, "stale": stale,
+            "rules": RULES, "window_hours": WINDOW_H, "coverage": round(head["coverage"], 2),
             "explanation": explanation,
             "method": "Heuristic late-blight favourability (Smith-period-inspired); not a validated outbreak probability."}

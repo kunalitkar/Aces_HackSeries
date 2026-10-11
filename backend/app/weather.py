@@ -25,7 +25,7 @@ def demo_series(scenario: str, hours: int = 60, now: datetime | None = None) -> 
             temp = 19.0 + 2.5 * diurnal
             rh = 92 - 5 * diurnal + 1.5 * math.sin(h / 3)
             rain = 1.2 if (6 <= h < 10 or 26 <= h < 32) else 0.0
-        out.append({"time": t, "temp_c": round(temp, 1), "rh": round(min(rh, 99)), "rain_mm": rain})
+        out.append({"time": t, "temp_c": round(temp, 1), "rh": round(min(rh, 99)), "rain_mm": rain, "kind": "simulated"})
     return out
 
 
@@ -52,12 +52,12 @@ def _num(v):
     return float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else None
 
 
-def _point(time: datetime, main: dict, wind: dict | None, wx: list | None, rain_mm, pop=None) -> dict:
+def _point(time: datetime, main: dict, wind: dict | None, wx: list | None, rain_mm, pop=None, kind="forecast") -> dict:
     w0 = wx[0] if isinstance(wx, list) and wx and isinstance(wx[0], dict) else {}
     return {"time": time, "temp_c": _num(main.get("temp")), "feels_like_c": _num(main.get("feels_like")),
             "rh": _num(main.get("humidity")), "pressure_hpa": _num(main.get("pressure")),
             "wind_ms": _num((wind or {}).get("speed")), "condition": w0.get("main"), "description": w0.get("description"),
-            "icon": w0.get("icon"), "rain_mm": rain_mm, "pop": _num(pop)}
+            "icon": w0.get("icon"), "rain_mm": rain_mm, "pop": _num(pop), "kind": kind}
 
 
 def _fetch_live(lat: float, lon: float) -> dict:
@@ -79,7 +79,7 @@ def _fetch_live(lat: float, lon: float) -> dict:
         tz = timezone(timedelta(seconds=offset))
         now = datetime.fromtimestamp(cj["dt"], tz)
         cur_rain = (cj.get("rain") or {}).get("1h")  # OWM omits `rain` when none fell in the last hour
-        current = _point(now, cj["main"], cj.get("wind"), cj.get("weather"), cur_rain if cur_rain is not None else 0.0)
+        current = _point(now, cj["main"], cj.get("wind"), cj.get("weather"), cur_rain if cur_rain is not None else 0.0, kind="observed")
         series = [current]
         for e in fj["list"]:  # 40 entries x 3 h = 5 days
             t = datetime.fromtimestamp(e["dt"], tz)
@@ -109,6 +109,30 @@ def live_weather(lat: float, lon: float, refresh: bool = False) -> dict:
     if res["status"] == "live":
         _cache[key] = (time.monotonic(), res)
     return {**res, "cached": False}
+
+
+def geocode(query: str) -> dict:
+    """City/place search via OpenWeatherMap Geocoding API (same key, through the backend only)."""
+    q = query.strip()
+    if len(q) < 2:
+        return {"status": "error", "error": "Type at least 2 characters.", "results": []}
+    if not config.OWM_API_KEY:
+        return {"status": "error", "error": "Location search needs OPENWEATHER_API_KEY on the server.", "results": []}
+    try:
+        with httpx.Client(timeout=httpx.Timeout(8.0, connect=5.0)) as c:
+            r = c.get("https://api.openweathermap.org/geo/1.0/direct", params={"q": q, "limit": 5, "appid": config.OWM_API_KEY})
+        if r.status_code in HTTP_ERRORS:
+            return {"status": "error", "error": HTTP_ERRORS[r.status_code][0], "results": []}
+        r.raise_for_status()
+        rows = r.json()
+        results = [{"name": x["name"], "state": x.get("state"), "country": x.get("country"),
+                    "lat": float(x["lat"]), "lon": float(x["lon"])} for x in rows]
+        return {"status": "ok", "results": results,
+                "error": None if results else f"No place found for '{q}'. Try adding the state, e.g. 'Nashik, Maharashtra'."}
+    except httpx.TimeoutException:
+        return {"status": "error", "error": "Location search timed out.", "results": []}
+    except (httpx.HTTPError, KeyError, TypeError, ValueError) as e:
+        return {"status": "error", "error": f"Location search failed ({type(e).__name__}).", "results": []}
 
 
 def get_weather(mode: str, lat: float, lon: float, refresh: bool = False) -> dict:

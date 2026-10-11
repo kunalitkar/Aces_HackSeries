@@ -13,3 +13,5 @@ __pycache__/
 # model weights: fetch with backend/scripts/download_model.py (SHA-256 verified)
 models/*.onnx
 models/*.onnx.data
+data/uploads/
+data/fetch.log

@@ -1,14 +1,23 @@
-"""ONNX EfficientNetV2-S leaf classifier. Session is created once and reused."""
+"""ONNX EfficientNetV2-S leaf classifier (BiernyVR/crop-disease-classifier, 38 PlantVillage classes).
+
+Preprocessing follows the model card exactly: RGB, bilinear resize to 224x224, /255, ImageNet mean/std
+(read from classes.json), CHW, softmax over logits. The session is created once and reused.
+
+Crop-conditioned prediction: when the user states the crop, scores are renormalised over that crop's
+classes only. `crop_mass` (the unrestricted probability assigned to the stated crop at all) is reported so
+photos that do not look like the stated crop are flagged as uncertain instead of being forced into a class.
+"""
 from __future__ import annotations
 import io
 import json
 import threading
 import time
 import numpy as np
-from PIL import Image, UnidentifiedImageError
+from PIL import Image, ImageOps, UnidentifiedImageError
 from . import config
 
-LOW_CONFIDENCE = 0.50
+LOW_CONFIDENCE = 0.50      # top score below this -> "uncertain"
+CROP_MISMATCH = 0.50       # stated crop receives < 50 % of unrestricted probability -> "photo may not be this crop"
 MIN_SIDE = 64
 ALLOWED_FORMATS = {"JPEG", "PNG", "WEBP"}
 
@@ -18,6 +27,14 @@ _state: dict = {"session": None, "classes": None, "mean": None, "std": None, "si
 
 class ImageRejected(ValueError):
     pass
+
+
+def parse_label(label: str) -> tuple[str, str]:
+    crop, _, cond = label.partition("___")
+    crop = crop.replace("_(including_sour)", "").replace("_(maize)", "").replace(",_bell", " (bell)").replace("_", " ").strip()
+    if crop == "Pepper (bell)":
+        crop = "Bell pepper"
+    return crop, cond.replace("_", " ").strip()
 
 
 def load() -> dict:
@@ -38,19 +55,26 @@ def load() -> dict:
                           std=np.array(meta["normalisation"]["std"], dtype=np.float32),
                           input_name=sess.get_inputs()[0].name)
         except Exception as e:  # missing files, bad onnxruntime install, etc.
-            _state["error"] = f"{type(e).__name__}: {e}"
+            hint = " Run backend/scripts/download_model.py to fetch the weights." if isinstance(e, (FileNotFoundError, OSError)) else ""
+            _state["error"] = f"{type(e).__name__}: {e}.{hint}"
         return _state
 
 
 def status() -> dict:
     s = load()
-    return {"available": s["session"] is not None, "model": "efficientnet_v2_s", "error": s["error"],
-            "num_classes": len(s["classes"]) if s["classes"] else None}
+    return {"available": s["session"] is not None, "model": "efficientnet_v2_s", "version": config.MODEL_VERSION,
+            "error": s["error"], "num_classes": len(s["classes"]) if s["classes"] else None}
 
 
-def parse_label(label: str) -> tuple[str, str]:
-    crop, _, cond = label.partition("___")
-    return crop.replace("_", " ").replace("(including sour)", "").strip(" ,"), cond.replace("_", " ").strip()
+def class_catalog() -> list[dict]:
+    """Crops and their classes, derived from the loaded classes.json (never hardcoded)."""
+    s = load()
+    crops: dict[str, list[dict]] = {}
+    for i, label in enumerate(s["classes"] or []):
+        crop, cond = parse_label(label)
+        crops.setdefault(crop, []).append({"index": i, "label": label, "condition": cond, "healthy": cond.lower() == "healthy"})
+    return [{"crop": c, "classes": v, "has_healthy_class": any(x["healthy"] for x in v),
+             "disease_classes": sum(not x["healthy"] for x in v)} for c, v in crops.items()]
 
 
 def preprocess(data: bytes) -> np.ndarray:
@@ -63,6 +87,7 @@ def preprocess(data: bytes) -> np.ndarray:
         raise ImageRejected("File is not a readable image. Upload a JPEG, PNG or WebP photo.")
     if fmt not in ALLOWED_FORMATS:
         raise ImageRejected(f"Unsupported image format '{fmt}'. Use JPEG, PNG or WebP.")
+    img = ImageOps.exif_transpose(img)  # phone photos store rotation in EXIF
     if min(img.size) < MIN_SIDE:
         raise ImageRejected(f"Image is too small ({img.size[0]}×{img.size[1]}px); minimum side is {MIN_SIDE}px.")
     img = img.convert("RGB").resize((s["size"], s["size"]), Image.BILINEAR)
@@ -75,20 +100,58 @@ def softmax(x: np.ndarray) -> np.ndarray:
     return e / e.sum()
 
 
-def classify(data: bytes) -> dict:
+def _entry(i: int, score: float) -> dict:
+    label = _state["classes"][i]
+    crop, cond = parse_label(label)
+    return {"label": label, "crop": crop, "condition": cond, "healthy": cond.lower() == "healthy", "score": float(score)}
+
+
+def predict_probs(data: bytes) -> tuple[np.ndarray, float]:
     s = load()
-    if s["session"] is None:
-        return {"status": "unavailable", "error": f"Model unavailable: {s['error']}"}
     tensor = preprocess(data)  # may raise ImageRejected
     t0 = time.perf_counter()
     logits = s["session"].run(None, {s["input_name"]: tensor})[0][0]
-    latency = (time.perf_counter() - t0) * 1000
-    probs = softmax(logits.astype(np.float64))
-    order = np.argsort(-probs)[:3]
-    top = [{"label": s["classes"][i], "crop": parse_label(s["classes"][i])[0],
-            "condition": parse_label(s["classes"][i])[1], "score": float(probs[i])} for i in order]
+    return softmax(logits.astype(np.float64)), (time.perf_counter() - t0) * 1000
+
+
+def interpret(probs: np.ndarray, crop: str | None) -> dict:
+    """Turn a probability vector into the API result, optionally conditioned on the stated crop."""
+    classes = _state["classes"]
+    order = np.argsort(-probs)
+    unrestricted = [_entry(i, probs[i]) for i in order[:3]]
+    res = {"status": "ok", "model_version": config.MODEL_VERSION, "unrestricted_top3": unrestricted,
+           "selected_crop": None, "crop_mass": None, "crop_mismatch": False, "single_class_crop": False,
+           "score_note": "Softmax score from the model — not a calibrated probability of infection."}
+    idx = [i for i, l in enumerate(classes) if crop and parse_label(l)[0].lower() == crop.lower()]
+    if crop and not idx:
+        raise ImageRejected(f"'{crop}' is not supported by the model.")
+    if idx:
+        mass = float(probs[idx].sum())
+        res.update(selected_crop=parse_label(classes[idx[0]])[0], crop_mass=mass, crop_mismatch=mass < CROP_MISMATCH)
+        if len(idx) == 1:
+            # Renormalising over one class would always give 100 %; report the raw score instead.
+            top = [_entry(idx[0], probs[idx[0]])]
+            res["single_class_crop"] = True
+        else:
+            sub = probs[idx] / mass
+            top = [_entry(idx[j], sub[j]) for j in np.argsort(-sub)[:3]]
+        res["conditioned"] = True
+    else:
+        top = unrestricted
+        res["conditioned"] = False
     best = top[0]
-    return {"status": "ok", "label": best["label"], "crop": best["crop"], "condition": best["condition"],
-            "score": best["score"], "top3": top, "latency_ms": round(latency, 1),
-            "is_tomato": best["crop"].lower() == "tomato", "low_confidence": best["score"] < LOW_CONFIDENCE,
-            "score_note": "Softmax score of the model's top class — not a calibrated probability of infection."}
+    res.update(label=best["label"], crop=best["crop"], condition=best["condition"], healthy=best["healthy"],
+               score=best["score"], top3=top)
+    res["low_confidence"] = best["score"] < LOW_CONFIDENCE
+    res["uncertain"] = bool(res["low_confidence"] or res["crop_mismatch"] or res["single_class_crop"])
+    return res
+
+
+def classify(data: bytes, crop: str | None = None) -> dict:
+    s = load()
+    if s["session"] is None:
+        return {"status": "unavailable", "error": f"Model unavailable: {s['error']}"}
+    probs, latency = predict_probs(data)
+    res = interpret(probs, crop)
+    res["latency_ms"] = round(latency, 1)
+    return res

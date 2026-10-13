@@ -1,17 +1,33 @@
+```gitignore
+# Python virtual environment
 backend/.venv/
+
+# Frontend dependencies and build
 frontend/node_modules/
 frontend/dist/
+
+# Python cache
 __pycache__/
+*.py[cod]
+
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
+
+# Logs
 *.log
 
-# duplicate originals of models/ (kept locally as backup)
+# Local model backups
 /classes.json
 /efficientnet_v2_s_best.onnx
 /efficientnet_v2_s_best.onnx.data
 
-# model weights: fetch with backend/scripts/download_model.py (SHA-256 verified)
+# Model weights downloaded separately
 models/*.onnx
 models/*.onnx.data
+
+# Uploaded data
 data/uploads/
 data/fetch.log
+```
